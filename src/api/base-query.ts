@@ -10,12 +10,18 @@ import {
   tokensRefreshed,
 } from '@/features/auth/auth-slice';
 import type { AuthTokens } from '@/features/auth/types';
+import type { DevState } from '@/features/dev/dev-slice';
+import { fixtureBaseQuery } from '@/mocks/fixture-base-query';
 
 /**
  * The slice of state this module needs. Typing it structurally rather than importing
  * RootState keeps the store from depending on the API client and back again.
  */
-type AuthAwareState = { auth: AuthState; network?: { online: boolean | null } };
+type AuthAwareState = {
+  auth: AuthState;
+  network?: { online: boolean | null };
+  dev?: DevState;
+};
 
 /** Problem details for a write attempted with no connection, worded like any other. */
 const OFFLINE_PROBLEM = {
@@ -93,8 +99,16 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  const state = api.getState() as AuthAwareState;
+
+  // A development build running a mock scenario answers from the contract's examples
+  // instead of the network. Release builds never reach this branch.
+  if (__DEV__ && state.dev?.mockScenario) {
+    return fixtureBaseQuery(args, api, extraOptions);
+  }
+
   const method = typeof args === 'string' ? 'GET' : (args.method ?? 'GET');
-  const online = (api.getState() as AuthAwareState).network?.online;
+  const online = state.network?.online;
 
   // Reads fall through to the cache; writes are refused outright, because a queued write
   // the person cannot see is worse than being told it did not happen.

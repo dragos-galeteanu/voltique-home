@@ -197,6 +197,15 @@ export function SettingsScreen() {
         />
       ) : null}
 
+      {__DEV__ ? (
+        <Button
+          label="Mock scenarios"
+          variant="secondary"
+          testID="settings-scenarios"
+          onPress={() => router.push('/dev/scenarios')}
+        />
+      ) : null}
+
       <Button
         label={t('settings.signOut')}
         variant="danger"

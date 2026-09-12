@@ -4,6 +4,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from '@/api/api';
 import { registerAuthListeners } from '@/features/auth/auth-listeners';
 import { authReducer } from '@/features/auth/auth-slice';
+import { devReducer } from '@/features/dev/dev-slice';
 import { householdReducer } from '@/features/household/household-slice';
 import { inviteReducer } from '@/features/invites/invite-slice';
 import { networkReducer } from '@/features/network/network-slice';
@@ -25,6 +26,7 @@ export function createStore() {
       auth: authReducer,
       household: householdReducer,
       invite: inviteReducer,
+      dev: devReducer,
       network: networkReducer,
       notifications: notificationReducer,
       cache: cacheReducer,

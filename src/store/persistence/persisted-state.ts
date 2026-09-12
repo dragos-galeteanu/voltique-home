@@ -15,6 +15,8 @@ export type PersistedState = {
   savedAt: string;
   ui: RootState['ui'];
   household: RootState['household'];
+  /** Development only: which mock scenario was running, so a reload keeps it. */
+  dev?: RootState['dev'];
   api: unknown;
 };
 
@@ -67,6 +69,7 @@ export function buildSnapshot(state: RootState, now: Date = new Date()): Persist
     savedAt: now.toISOString(),
     ui: state.ui,
     household: state.household,
+    dev: state.dev,
     api: sanitiseApiState(state.api),
   };
 }

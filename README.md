@@ -93,6 +93,43 @@ src/components/      shared components that are not design primitives
 assets/              icons and splash
 ```
 
+## Running without a backend
+
+The app can answer every request from the examples in the contract, with no server at
+all. In a development build, open Settings and then Mock scenarios, and pick one:
+
+| Scenario             | What it gives you                                                          |
+| -------------------- | -------------------------------------------------------------------------- |
+| Populated household  | The contract examples: three assets, three alerts, a full day of telemetry |
+| Brand new account    | Nothing yet, for checking every empty state                                |
+| Everything is broken | Assets faulted and alerts open                                             |
+| Installer view       | Signed in as an installer, alerts across more than one household           |
+| Slow network         | Two seconds per request, so loading states are visible                     |
+| API is down          | Every request answers 503                                                  |
+
+This replaces the transport and nothing else. Screens keep their real behaviour: loading,
+refetching, cache invalidation, optimistic updates and their rollback all still run, which
+is why it is worth more than seeding the store directly.
+
+The backend it talks to holds state between requests, so acknowledging an alert or adding
+an asset sticks instead of snapping back on the next refetch. Only operations whose answer
+depends on state need code, in `src/mocks/handlers.ts`; everything else falls through to
+the contract example. Adding a scenario is a few lines in `src/mocks/scenarios.ts`.
+
+Fixtures are generated, never hand-written:
+
+```bash
+npm run fixtures
+```
+
+That reads the examples out of `openapi.yaml`, follows schema references and composes
+pages and envelopes the way a mock server would, then writes typed fixtures. One source of
+truth, so the Prism mock, the in-app scenarios and the tests cannot drift apart. If an
+operation has no example, the generator says so by name.
+
+The choice of scenario survives a reload, and the picker is gated on a development build.
+The fixtures themselves are small enough that shipping them is not worth guarding against.
+
 ## API contract
 
 [`src/contract/openapi.yaml`](src/contract/openapi.yaml) is the source of truth. It

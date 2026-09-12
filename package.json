@@ -32,7 +32,8 @@
     "e2e:build:android": "detox build --configuration android.emu.debug",
     "e2e:test:android": "detox test --configuration android.emu.debug",
     "typegen": "node scripts/generate-route-types.mjs",
-    "mock:local": "node scripts/mock-local.mjs"
+    "mock:local": "node scripts/mock-local.mjs",
+    "fixtures": "node scripts/generate-fixtures.mjs && prettier --write src/mocks/generated"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -92,7 +93,8 @@
     "lint-staged": "^17.5.1",
     "prettier": "^3.9.6",
     "test-renderer": "^1.2.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "yaml": "^2.9.1"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
