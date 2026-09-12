@@ -5,7 +5,7 @@ export default function InstallerHouseholdsScreen() {
     <PlaceholderScreen
       title="Households"
       description="Households that invited you, with the assets and device logs you are scoped to see."
-      milestone="M3"
+      milestone="M6"
       testID="installer-households"
     />
   );

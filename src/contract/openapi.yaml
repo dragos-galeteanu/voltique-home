@@ -357,6 +357,27 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AssetType'
+              example:
+                - id: solar_inverter
+                  name: Solar inverter
+                  category: production
+                  metrics: [power, energy]
+                - id: battery
+                  name: Home battery
+                  category: storage
+                  metrics: [power, energy, stateOfCharge]
+                - id: ev_charger
+                  name: EV charger
+                  category: consumption
+                  metrics: [power, energy]
+                - id: heat_pump
+                  name: Heat pump
+                  category: consumption
+                  metrics: [power, energy, temperature]
+                - id: generator
+                  name: Generator
+                  category: production
+                  metrics: [power, energy]
         '401':
           $ref: '#/components/responses/Unauthorized'
   /manufacturers:
@@ -378,6 +399,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Manufacturer'
+              example:
+                - id: sunra
+                  name: Sunra
+                  assetTypeIds: [solar_inverter, battery]
+                - id: voltbox
+                  name: Voltbox
+                  assetTypeIds: [ev_charger]
+                - id: thermeo
+                  name: Thermeo
+                  assetTypeIds: [heat_pump]
         '401':
           $ref: '#/components/responses/Unauthorized'
   /manufacturers/{manufacturerId}/models:
@@ -404,6 +435,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AssetModel'
+              example:
+                - id: sunra-x7
+                  manufacturerId: sunra
+                  assetTypeId: solar_inverter
+                  name: Sunra X7
+                  ratedPowerW: 7000
+                  connectionParameters:
+                    - key: serialNumber
+                      label: Serial number
+                      type: text
+                      required: true
+                      helpText: Printed on the label beside the DC isolator.
+                      pattern: '^[A-Z0-9]{8,16}$'
+                    - key: cloudPin
+                      label: Installer PIN
+                      type: password
+                      required: true
+                - id: sunra-x10
+                  manufacturerId: sunra
+                  assetTypeId: solar_inverter
+                  name: Sunra X10
+                  ratedPowerW: 10000
+                  connectionParameters:
+                    - key: serialNumber
+                      label: Serial number
+                      type: text
+                      required: true
+                    - key: cloudPin
+                      label: Installer PIN
+                      type: password
+                      required: true
+                    - key: siteReference
+                      label: Site reference
+                      type: text
+                      required: false
+                      helpText: Optional, only if the installer set one.
         '404':
           $ref: '#/components/responses/NotFound'
   /households/{householdId}/assets:
@@ -427,6 +494,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AssetPage'
+              example:
+                nextCursor: null
+                data:
+                  - id: 22222222-2222-4222-8222-222222222222
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    name: Roof array
+                    assetTypeId: solar_inverter
+                    manufacturerId: sunra
+                    modelId: sunra-x7
+                    category: production
+                    status: online
+                    ratedPowerW: 7000
+                    lastSeenAt: '2026-09-12T08:55:00Z'
+                    latestReading:
+                      powerW: 4210
+                      energyTodayWh: 18400
+                      measuredAt: '2026-09-12T08:55:00Z'
+                    openAlertCount: 0
+                    createdAt: '2026-02-02T11:30:00Z'
+                  - id: 44444444-4444-4444-8444-444444444444
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    name: Garage charger
+                    assetTypeId: ev_charger
+                    manufacturerId: voltbox
+                    modelId: voltbox-22
+                    category: consumption
+                    status: offline
+                    ratedPowerW: 22000
+                    lastSeenAt: '2026-09-11T19:02:00Z'
+                    latestReading:
+                      powerW: 0
+                      energyTodayWh: 7300
+                      measuredAt: '2026-09-11T19:02:00Z'
+                    openAlertCount: 0
+                    createdAt: '2026-03-10T09:00:00Z'
+                  - id: 55555555-5555-4555-8555-555555555555
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    name: Cellar battery
+                    assetTypeId: battery
+                    manufacturerId: sunra
+                    modelId: sunra-cell
+                    category: storage
+                    status: faulted
+                    capacityWh: 10000
+                    lastSeenAt: '2026-09-12T08:40:00Z'
+                    latestReading:
+                      powerW: -1200
+                      energyTodayWh: 4100
+                      stateOfChargePercent: 62
+                      measuredAt: '2026-09-12T08:40:00Z'
+                    openAlertCount: 1
+                    createdAt: '2026-04-01T14:20:00Z'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':

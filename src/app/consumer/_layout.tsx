@@ -1,17 +1,19 @@
-import { RoleTabs, type TabDefinition } from '@/components/role-tabs';
+import { Stack } from 'expo-router';
+
 import { RoleGate } from '@/features/auth/role-gate';
 
-const TABS: TabDefinition[] = [
-  { name: 'dashboard', title: 'Dashboard', icon: 'speedometer-outline' },
-  { name: 'assets', title: 'Assets', icon: 'hardware-chip-outline' },
-  { name: 'alerts', title: 'Alerts', icon: 'notifications-outline' },
-  { name: 'settings', title: 'Settings', icon: 'settings-outline' },
-];
-
+/**
+ * Consumer shell. The tabs live in a group below this stack so that flows such as
+ * adding an asset can cover them instead of being squeezed into a tab.
+ */
 export default function ConsumerLayout() {
   return (
     <RoleGate role="consumer">
-      <RoleTabs tabs={TABS} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="add-asset" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="new-household" options={{ presentation: 'modal' }} />
+      </Stack>
     </RoleGate>
   );
 }

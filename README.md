@@ -28,6 +28,19 @@ cp .env.example .env.local
 npm start
 ```
 
+## Running it without Xcode
+
+The app uses only modules bundled into Expo Go, so it runs on a physical phone today,
+before the native toolchain is set up.
+
+```bash
+npm run mock:start && npm start
+```
+
+Scan the QR code with Expo Go. The phone cannot reach `localhost`, so point the app at
+the machine's address on the network by setting `API_ORIGIN` in `.env.local` to
+something like `http://192.168.1.20:4010` before starting.
+
 ## Native projects
 
 `ios/` and `android/` are generated, not committed. Regenerate them with:
