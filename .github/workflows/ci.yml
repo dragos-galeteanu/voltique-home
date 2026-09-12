@@ -48,6 +48,9 @@ jobs:
       - name: Formatting
         run: npm run format:check
 
+      - name: Documentation links
+        run: npm run docs:check
+
       - name: Unit and component tests
         run: npm test -- --ci --coverage
 

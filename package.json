@@ -17,7 +17,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "doctor": "expo-doctor",
-    "verify": "npm run typecheck && npm run lint && npm run format:check && npm test -- --silent",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run docs:check && npm test -- --silent",
     "prepare": "husky",
     "contract:lint": "redocly lint",
     "codegen": "rtk-query-codegen-openapi openapi-config.ts && prettier --write src/api/generated",
@@ -33,7 +33,8 @@
     "e2e:test:android": "detox test --configuration android.emu.debug",
     "typegen": "node scripts/generate-route-types.mjs",
     "mock:local": "node scripts/mock-local.mjs",
-    "fixtures": "node scripts/generate-fixtures.mjs && prettier --write src/mocks/generated"
+    "fixtures": "node scripts/generate-fixtures.mjs && prettier --write src/mocks/generated",
+    "docs:check": "node scripts/check-docs.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
