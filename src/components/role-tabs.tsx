@@ -1,11 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/design-system';
 
 export type TabDefinition = {
   name: string;
-  title: string;
+  /** Translation key, resolved here so the tab bar follows the active language. */
+  titleKey: 'tabs.dashboard' | 'tabs.assets' | 'tabs.alerts' | 'tabs.settings' | 'tabs.households';
   icon: keyof typeof Ionicons.glyphMap;
 };
 
@@ -15,6 +17,7 @@ export type TabDefinition = {
  */
 export function RoleTabs({ tabs }: { tabs: TabDefinition[] }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -34,7 +37,7 @@ export function RoleTabs({ tabs }: { tabs: TabDefinition[] }) {
           key={tab.name}
           name={tab.name}
           options={{
-            title: tab.title,
+            title: t(tab.titleKey),
             tabBarButtonTestID: `tab-${tab.name}`,
             tabBarIcon: ({ color, size }) => <Ionicons name={tab.icon} color={color} size={size} />,
           }}

@@ -1,0 +1,136 @@
+{
+  "app": {
+    "name": "Voltique Home",
+    "tagline": "Controla lo que tu hogar produce, almacena y consume."
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "remove": "Eliminar",
+    "tryAgain": "Reintentar",
+    "noValue": "—",
+    "never": "nunca",
+    "justNow": "ahora mismo",
+    "minutesAgo": "hace {{count}} min",
+    "hoursAgo": "hace {{count}} h",
+    "daysAgo": "hace {{count}} d",
+    "unknown": "desconocido"
+  },
+  "errors": {
+    "generic": "Algo ha fallado",
+    "title": "No ha funcionado",
+    "offline": "No se puede contactar con el servidor. Comprueba tu conexión.",
+    "timeout": "El servidor ha tardado demasiado en responder.",
+    "renderTitle": "Algo ha fallado"
+  },
+  "auth": {
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.es",
+    "password": "Contraseña",
+    "signIn": "Iniciar sesión",
+    "signInFailed": "No se ha podido iniciar sesión",
+    "signedOut": "Sesión cerrada",
+    "invalidEmail": "Introduce un correo electrónico válido",
+    "shortPassword": "Al menos 8 caracteres",
+    "devShortcutNote": "Solo para desarrollo. El mock siempre inicia sesión como consumidor, así que esta es la única vía al área de instalador hasta que el backend pueda variar el rol.",
+    "continueAsInstaller": "Continuar como instalador"
+  },
+  "tabs": {
+    "dashboard": "Panel",
+    "assets": "Dispositivos",
+    "alerts": "Alertas",
+    "settings": "Ajustes",
+    "households": "Hogares"
+  },
+  "household": {
+    "switcher": "Cambiar de hogar",
+    "none": "Ningún hogar",
+    "title": "Hogares",
+    "assetCount_one": "{{count}} dispositivo",
+    "assetCount_other": "{{count}} dispositivos",
+    "create": "Crear hogar",
+    "newTitle": "Nuevo hogar",
+    "name": "Nombre",
+    "namePlaceholder": "Calle de los Arces",
+    "nameRequired": "Dale un nombre al hogar",
+    "nameTooLong": "Máximo 80 caracteres",
+    "timezone": "Zona horaria",
+    "timezoneHint": "Los totales diarios y mensuales se agrupan en esta zona.",
+    "timezoneRequired": "La zona horaria es obligatoria",
+    "created": "{{name}} creado",
+    "createFailed": "No se ha podido crear",
+    "emptyTitle": "Todavía no hay hogar",
+    "emptyDescription": "Crea primero un hogar. Los dispositivos, las alertas y el acceso del instalador dependen de él."
+  },
+  "assets": {
+    "title": "Dispositivos",
+    "add": "Añadir dispositivo",
+    "now": "Ahora",
+    "today": "Hoy",
+    "lastSeen": "Visto {{time}}",
+    "holdToRemove": "Mantén pulsado para eliminar este dispositivo",
+    "emptyTitle": "Todavía no hay dispositivos",
+    "emptyDescription": "Añade un cargador, un inversor, una batería o una bomba de calor para empezar a controlar este hogar.",
+    "removeTitle": "¿Eliminar {{name}}?",
+    "removeExplanation": "Su historial permanece en el servidor, pero deja de aparecer en este hogar y no se recogen nuevas lecturas.",
+    "removed": "{{name}} eliminado",
+    "removeFailed": "No se ha podido eliminar el dispositivo",
+    "status": {
+      "online": "En línea",
+      "offline": "Sin conexión",
+      "faulted": "Con fallo",
+      "commissioning": "Conectando",
+      "unknown": "Desconocido"
+    }
+  },
+  "addAsset": {
+    "title": "Añadir dispositivo",
+    "toHousehold": "a {{name}}",
+    "step": "Paso {{number}}",
+    "stepType": "¿Qué es?",
+    "stepManufacturer": "¿Quién lo fabrica?",
+    "stepModel": "¿Qué modelo?",
+    "noManufacturers": "Todavía no hay fabricantes para esto.",
+    "ratedPower": "{{power}} nominales",
+    "connectTitle": "Conecta tu {{model}}",
+    "nameLabel": "Nombre",
+    "nameHint": "Cómo quieres llamarlo en este hogar.",
+    "nameRequired": "Dale un nombre al dispositivo",
+    "nameTooLong": "Máximo 80 caracteres",
+    "credentialsNote": "Estos datos se envían a la integración del fabricante y no se vuelven a mostrar.",
+    "fieldRequired": "{{field}} es obligatorio",
+    "fieldInvalid": "{{field}} no es válido",
+    "submit": "Añadir dispositivo",
+    "connecting": "{{name}} se está conectando",
+    "failed": "No se ha podido añadir el dispositivo",
+    "needHouseholdTitle": "Elige primero un hogar",
+    "needHouseholdDescription": "Los dispositivos pertenecen a un hogar, así que debe existir uno antes de poder añadirlos."
+  },
+  "settings": {
+    "title": "Ajustes",
+    "signedInAs": "Sesión iniciada como",
+    "unknownUser": "Desconocido",
+    "role": "Rol: {{role}}",
+    "roleNone": "ninguno",
+    "appearance": "Apariencia",
+    "themeSystem": "Sistema",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "language": "Idioma",
+    "signOut": "Cerrar sesión"
+  },
+  "roles": {
+    "consumer": "consumidor",
+    "installer": "instalador"
+  },
+  "placeholder": {
+    "plannedFor": "Previsto para {{milestone}}",
+    "dashboardTitle": "Panel",
+    "dashboardDescription": "Producción, consumo y estado de la batería del hogar a lo largo del tiempo, alimentados por los endpoints de telemetría.",
+    "alertsTitle": "Alertas",
+    "alertsDescription": "Fallos abiertos en el hogar, confirmados y resueltos desde aquí.",
+    "installerHouseholdsTitle": "Hogares",
+    "installerHouseholdsDescription": "Los hogares que te han invitado, con los dispositivos y registros a los que tienes acceso.",
+    "installerAlertsTitle": "Alertas",
+    "installerAlertsDescription": "Fallos en todos los hogares que mantienes, con los registros de dispositivo que hay detrás."
+  }
+}

@@ -152,6 +152,24 @@ npm run mock:start && npm run e2e:build:ios && npm run e2e:test:ios
 Every interactive element carries a `testID`, which is what both layers select on.
 Detox on Android points the app at `10.0.2.2`, since an emulator cannot see `localhost`.
 
+## Languages
+
+The app ships in English, German, French, Italian and Spanish, following the device
+language, with an override in settings. English in `src/i18n/locales/en.json` is the
+source catalogue; the rest are translated from it.
+
+Keys are type-checked against English, so a missing or renamed key is a compile error
+rather than a string that renders as itself. Tests additionally assert that every locale
+has exactly English's keys, that no value is empty, and that no translation drops an
+interpolated value.
+
+Numbers, dates and relative times are formatted through `Intl` with the active locale, so
+a German reader sees a comma in every kilowatt figure. Nothing outside
+`src/lib/format-energy.ts` converts a unit.
+
+Server-sent error text is shown as it arrives, which means the API is responsible for
+localising problem details. Everything the app words itself is in the catalogues.
+
 ## Architecture
 
 **State.** One Redux store. Client state lives in slices under `src/features`; server

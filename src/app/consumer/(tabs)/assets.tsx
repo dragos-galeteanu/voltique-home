@@ -1,6 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, RefreshControl, View } from 'react-native';
 
 import { useListHouseholdAssetsQuery } from '@/api/generated/endpoints';
@@ -16,6 +17,7 @@ export default function AssetsScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   const households = useSelectedHousehold();
   const householdId = households.selectedHouseholdId;
@@ -31,9 +33,12 @@ export default function AssetsScreen() {
 
     try {
       await deleteAsset({ assetId: id }).unwrap();
-      showToast({ message: `${name} removed`, tone: 'success' });
+      showToast({ message: t('assets.removed', { name }), tone: 'success' });
     } catch (error) {
-      showToast({ message: getErrorMessage(error, 'Could not remove that asset'), tone: 'danger' });
+      showToast({
+        message: getErrorMessage(error, t('assets.removeFailed')),
+        tone: 'danger',
+      });
     }
   }
 
@@ -56,12 +61,12 @@ export default function AssetsScreen() {
   if (!households.household) {
     return (
       <Screen testID="consumer-assets">
-        <Text variant="display">Assets</Text>
+        <Text variant="display">{t('assets.title')}</Text>
         <EmptyState
-          title="No household yet"
-          description="Create a household first. Assets, alerts and installer access all hang off it."
+          title={t('household.emptyTitle')}
+          description={t('household.emptyDescription')}
           action={{
-            label: 'Create household',
+            label: t('household.create'),
             onPress: () => router.push('/consumer/new-household'),
           }}
           testID="no-household"
@@ -75,7 +80,7 @@ export default function AssetsScreen() {
       <View style={{ gap: theme.spacing.md }}>
         <HouseholdSwitcher households={households.households} selected={households.household} />
         <Button
-          label="Add asset"
+          label={t('assets.add')}
           testID="add-asset"
           onPress={() => router.push('/consumer/add-asset')}
         />
@@ -106,9 +111,9 @@ export default function AssetsScreen() {
           )}
           ListEmptyComponent={
             <EmptyState
-              title="No assets yet"
-              description="Add a charger, inverter, battery or heat pump to start tracking this household."
-              action={{ label: 'Add asset', onPress: () => router.push('/consumer/add-asset') }}
+              title={t('assets.emptyTitle')}
+              description={t('assets.emptyDescription')}
+              action={{ label: t('assets.add'), onPress: () => router.push('/consumer/add-asset') }}
               testID="assets-empty"
             />
           }
@@ -118,20 +123,21 @@ export default function AssetsScreen() {
       <Sheet
         visible={pendingRemoval !== null}
         onClose={() => setPendingRemoval(null)}
-        title={`Remove ${pendingRemoval?.name ?? 'asset'}?`}
+        title={t('assets.removeTitle', { name: pendingRemoval?.name ?? '' })}
         testID="remove-asset-sheet"
       >
-        <Text tone="secondary">
-          Its history stays on the server, but it stops appearing in this household and no new
-          readings are collected.
-        </Text>
+        <Text tone="secondary">{t('assets.removeExplanation')}</Text>
         <Button
-          label="Remove"
+          label={t('common.remove')}
           variant="danger"
           testID="confirm-remove-asset"
           onPress={() => void confirmRemoval()}
         />
-        <Button label="Cancel" variant="ghost" onPress={() => setPendingRemoval(null)} />
+        <Button
+          label={t('common.cancel')}
+          variant="ghost"
+          onPress={() => setPendingRemoval(null)}
+        />
       </Sheet>
     </Screen>
   );

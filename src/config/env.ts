@@ -10,6 +10,10 @@ export const API_PATH_PREFIX = '/api/v1';
 const appExtraSchema = z.object({
   appVariant: z.enum(['development', 'staging', 'production']),
   apiOrigin: z.url(),
+  appVersion: z.string(),
+  buildNumber: z.string(),
+  /** Absent means crash reporting stays off, which is the case for a local checkout. */
+  sentryDsn: z.string().optional(),
 });
 
 type AppExtra = z.infer<typeof appExtraSchema>;

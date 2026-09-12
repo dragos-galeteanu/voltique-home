@@ -1,0 +1,136 @@
+{
+  "app": {
+    "name": "Voltique Home",
+    "tagline": "Track what your home makes, stores and uses."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "tryAgain": "Try again",
+    "noValue": "—",
+    "never": "never",
+    "justNow": "just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} h ago",
+    "daysAgo": "{{count}} d ago",
+    "unknown": "unknown"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "title": "That did not work",
+    "offline": "Cannot reach the server. Check your connection.",
+    "timeout": "The server took too long to respond.",
+    "renderTitle": "Something went wrong"
+  },
+  "auth": {
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signInFailed": "Could not sign you in",
+    "signedOut": "Signed out",
+    "invalidEmail": "Enter a valid email address",
+    "shortPassword": "At least 8 characters",
+    "devShortcutNote": "Development shortcut. The mock always signs you in as a consumer, so this is the only way into the installer shell until the backend can vary the role.",
+    "continueAsInstaller": "Continue as installer"
+  },
+  "tabs": {
+    "dashboard": "Dashboard",
+    "assets": "Assets",
+    "alerts": "Alerts",
+    "settings": "Settings",
+    "households": "Households"
+  },
+  "household": {
+    "switcher": "Switch household",
+    "none": "No household",
+    "title": "Households",
+    "assetCount_one": "{{count}} asset",
+    "assetCount_other": "{{count}} assets",
+    "create": "Create household",
+    "newTitle": "New household",
+    "name": "Name",
+    "namePlaceholder": "Maple Street",
+    "nameRequired": "Give the household a name",
+    "nameTooLong": "Keep it under 80 characters",
+    "timezone": "Timezone",
+    "timezoneHint": "Daily and monthly totals are bucketed in this zone.",
+    "timezoneRequired": "A timezone is required",
+    "created": "{{name}} created",
+    "createFailed": "Could not create it",
+    "emptyTitle": "No household yet",
+    "emptyDescription": "Create a household first. Assets, alerts and installer access all hang off it."
+  },
+  "assets": {
+    "title": "Assets",
+    "add": "Add asset",
+    "now": "Now",
+    "today": "Today",
+    "lastSeen": "Last seen {{time}}",
+    "holdToRemove": "Hold to remove this asset",
+    "emptyTitle": "No assets yet",
+    "emptyDescription": "Add a charger, inverter, battery or heat pump to start tracking this household.",
+    "removeTitle": "Remove {{name}}?",
+    "removeExplanation": "Its history stays on the server, but it stops appearing in this household and no new readings are collected.",
+    "removed": "{{name}} removed",
+    "removeFailed": "Could not remove that asset",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "faulted": "Faulted",
+      "commissioning": "Connecting",
+      "unknown": "Unknown"
+    }
+  },
+  "addAsset": {
+    "title": "Add asset",
+    "toHousehold": "to {{name}}",
+    "step": "Step {{number}}",
+    "stepType": "What is it?",
+    "stepManufacturer": "Who made it?",
+    "stepModel": "Which model?",
+    "noManufacturers": "No manufacturers listed for this yet.",
+    "ratedPower": "{{power}} rated",
+    "connectTitle": "Connect your {{model}}",
+    "nameLabel": "Name",
+    "nameHint": "What you want to call it in this household.",
+    "nameRequired": "Give the asset a name",
+    "nameTooLong": "Keep it under 80 characters",
+    "credentialsNote": "These are sent to the manufacturer integration and are never shown again.",
+    "fieldRequired": "{{field}} is required",
+    "fieldInvalid": "{{field}} is not valid",
+    "submit": "Add asset",
+    "connecting": "{{name}} is connecting",
+    "failed": "Could not add that asset",
+    "needHouseholdTitle": "Pick a household first",
+    "needHouseholdDescription": "Assets belong to a household, so one has to exist before you can add to it."
+  },
+  "settings": {
+    "title": "Settings",
+    "signedInAs": "Signed in as",
+    "unknownUser": "Unknown",
+    "role": "Role: {{role}}",
+    "roleNone": "none",
+    "appearance": "Appearance",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "language": "Language",
+    "signOut": "Sign out"
+  },
+  "roles": {
+    "consumer": "consumer",
+    "installer": "installer"
+  },
+  "placeholder": {
+    "plannedFor": "Planned for {{milestone}}",
+    "dashboardTitle": "Dashboard",
+    "dashboardDescription": "Household production, consumption and battery state over time, with the charts fed by the telemetry endpoints.",
+    "alertsTitle": "Alerts",
+    "alertsDescription": "Open faults across the household, acknowledged and resolved from here.",
+    "installerHouseholdsTitle": "Households",
+    "installerHouseholdsDescription": "Households that invited you, with the assets and device logs you are scoped to see.",
+    "installerAlertsTitle": "Alerts",
+    "installerAlertsDescription": "Faults across every household you maintain, with the raw device logs behind each one."
+  }
+}

@@ -14,7 +14,11 @@ async function signIn() {
 
 describe('Assets', () => {
   beforeEach(async () => {
-    await device.launchApp({ delete: true, newInstance: true });
+    await device.launchApp({
+      delete: true,
+      newInstance: true,
+      languageAndLocale: { language: 'en', locale: 'en-US' },
+    });
     await signIn();
     await element(by.id('tab-assets')).tap();
   });
@@ -63,7 +67,7 @@ describe('Assets', () => {
 
     await element(by.id('submit-asset')).tap();
 
-    await expect(element(by.text('Serial number is required'))).toBeVisible();
+    await expect(element(by.id('asset-credential-serialNumber-error'))).toBeVisible();
     await expect(element(by.id('add-asset-screen'))).toBeVisible();
   });
 

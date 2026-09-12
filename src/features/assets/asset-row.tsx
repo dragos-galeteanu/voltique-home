@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import type { Asset } from '@/api/generated/endpoints';
@@ -8,13 +9,16 @@ import { ASSET_STATUS_PRESENTATION } from './asset-status';
 
 export function AssetRow({ asset, onLongPress }: { asset: Asset; onLongPress: () => void }) {
   const theme = useTheme();
+  const { t } = useTranslation();
+
   const status = ASSET_STATUS_PRESENTATION[asset.status];
+  const statusLabel = t(status.labelKey);
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${asset.name}, ${status.label}`}
-      accessibilityHint="Hold to remove this asset"
+      accessibilityLabel={`${asset.name}, ${statusLabel}`}
+      accessibilityHint={t('assets.holdToRemove')}
       onLongPress={onLongPress}
       testID={`asset-row-${asset.id}`}
     >
@@ -27,15 +31,18 @@ export function AssetRow({ asset, onLongPress }: { asset: Asset; onLongPress: ()
               {asset.name}
             </Text>
             <Text variant="caption" tone="muted">
-              Last seen {formatRelativeTime(asset.lastSeenAt)}
+              {t('assets.lastSeen', { time: formatRelativeTime(asset.lastSeenAt) })}
             </Text>
           </View>
-          <StatusPill label={status.label} tone={status.tone} testID={`asset-status-${asset.id}`} />
+          <StatusPill label={statusLabel} tone={status.tone} testID={`asset-status-${asset.id}`} />
         </View>
 
         <View style={{ flexDirection: 'row', gap: theme.spacing.xl }}>
-          <Reading label="Now" value={formatPower(asset.latestReading?.powerW)} />
-          <Reading label="Today" value={formatEnergy(asset.latestReading?.energyTodayWh)} />
+          <Reading label={t('assets.now')} value={formatPower(asset.latestReading?.powerW)} />
+          <Reading
+            label={t('assets.today')}
+            value={formatEnergy(asset.latestReading?.energyTodayWh)}
+          />
         </View>
       </Surface>
     </Pressable>

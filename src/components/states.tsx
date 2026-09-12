@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 
 import { getErrorMessage, isRetryable } from '@/api/problem';
@@ -46,14 +47,16 @@ export function ErrorState({
   onRetry?: () => void;
   testID?: string;
 }) {
+  const { t } = useTranslation();
+
   return (
     <Surface gap="md" testID={testID}>
       <Text variant="heading" tone="danger">
-        That did not work
+        {t('errors.title')}
       </Text>
       <Text tone="secondary">{getErrorMessage(error)}</Text>
       {onRetry && isRetryable(error) ? (
-        <Button label="Try again" variant="secondary" onPress={onRetry} testID="retry" />
+        <Button label={t('common.tryAgain')} variant="secondary" onPress={onRetry} testID="retry" />
       ) : null}
     </Surface>
   );

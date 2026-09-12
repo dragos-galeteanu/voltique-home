@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Button, Screen, Surface, Text } from '@/design-system';
@@ -7,12 +8,13 @@ import { useAppDispatch } from '@/store/hooks';
 
 export default function SignInScreen() {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   return (
     <Screen scrollable testID="sign-in-screen">
       <View style={{ gap: 4, marginTop: 32 }}>
-        <Text variant="display">Voltique Home</Text>
-        <Text tone="secondary">Track what your home makes, stores and uses.</Text>
+        <Text variant="display">{t('app.name')}</Text>
+        <Text tone="secondary">{t('app.tagline')}</Text>
       </View>
 
       <SignInForm />
@@ -24,7 +26,7 @@ export default function SignInScreen() {
             way into the installer shell until the backend can vary the role.
           </Text>
           <Button
-            label="Continue as installer"
+            label={t('auth.continueAsInstaller')}
             variant="secondary"
             testID="sign-in-as-installer"
             onPress={() =>

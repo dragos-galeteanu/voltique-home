@@ -52,6 +52,10 @@ All of these live in GitHub repository secrets. None belongs in the repository.
 | `ANDROID_KEY_PASSWORD`          | Android | Key password                                        |
 | `PLAY_SERVICE_ACCOUNT_JSON`     | Android | Service account JSON, whole file                    |
 
+Crash reports are tied to the release, named as the marketing version plus the build
+number, so a stack trace points at the exact build. Source maps upload during the native
+build, which is why the token has to be present then rather than afterwards.
+
 ## What a release run does
 
 1. Runs the end-to-end suite on a simulator and an emulator, and stops if anything fails.

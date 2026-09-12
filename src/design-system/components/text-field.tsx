@@ -11,7 +11,15 @@ export type TextFieldProps = Omit<TextInputProps, 'style'> & {
   hint?: string;
 };
 
-export function TextField({ label, error, hint, onBlur, onFocus, ...rest }: TextFieldProps) {
+export function TextField({
+  label,
+  error,
+  hint,
+  onBlur,
+  onFocus,
+  testID,
+  ...rest
+}: TextFieldProps) {
   const theme = useTheme();
   const [focused, setFocused] = useState(false);
   const inputId = useId();
@@ -34,6 +42,7 @@ export function TextField({ label, error, hint, onBlur, onFocus, ...rest }: Text
         aria-invalid={Boolean(error)}
         placeholderTextColor={theme.colors.textMuted}
         selectionColor={theme.colors.accent}
+        testID={testID}
         onFocus={(event) => {
           setFocused(true);
           onFocus?.(event);
@@ -57,7 +66,7 @@ export function TextField({ label, error, hint, onBlur, onFocus, ...rest }: Text
       />
 
       {error ? (
-        <Text variant="caption" tone="danger">
+        <Text variant="caption" tone="danger" testID={testID ? `${testID}-error` : undefined}>
           {error}
         </Text>
       ) : hint ? (

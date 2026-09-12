@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo } from 'react';
 import { Controller, type Resolver, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import type { AssetModel } from '@/api/generated/endpoints';
@@ -11,25 +12,37 @@ export type ConnectValues = {
   credentials: Record<string, string>;
 };
 
+type Translate = (
+  key:
+    | 'addAsset.fieldRequired'
+    | 'addAsset.fieldInvalid'
+    | 'addAsset.nameRequired'
+    | 'addAsset.nameTooLong',
+  options?: { field: string },
+) => string;
+
 /**
  * Builds the validation rules from the model's declared connection parameters, so a new
- * manufacturer needs no code change here.
+ * manufacturer needs no code change here, and the messages follow the active language.
  */
-function buildSchema(model: AssetModel) {
+function buildSchema(model: AssetModel, t: Translate) {
   const shape: Record<string, z.ZodTypeAny> = {};
 
   for (const parameter of model.connectionParameters) {
     let field = z.string();
     if (parameter.pattern) {
-      field = field.regex(new RegExp(parameter.pattern), `${parameter.label} is not valid`);
+      field = field.regex(
+        new RegExp(parameter.pattern),
+        t('addAsset.fieldInvalid', { field: parameter.label }),
+      );
     }
     shape[parameter.key] = parameter.required
-      ? field.min(1, `${parameter.label} is required`)
+      ? field.min(1, t('addAsset.fieldRequired', { field: parameter.label }))
       : field.optional().or(z.literal(''));
   }
 
   return z.object({
-    name: z.string().min(1, 'Give the asset a name').max(80, 'Keep it under 80 characters'),
+    name: z.string().min(1, t('addAsset.nameRequired')).max(80, t('addAsset.nameTooLong')),
     credentials: z.object(shape),
   });
 }
@@ -43,7 +56,8 @@ export function ConnectForm({
   submitting: boolean;
   onSubmit: (values: ConnectValues) => void;
 }) {
-  const schema = useMemo(() => buildSchema(model), [model]);
+  const { t } = useTranslation();
+  const schema = useMemo(() => buildSchema(model, t), [model, t]);
 
   const defaultCredentials = useMemo(
     () => Object.fromEntries(model.connectionParameters.map((parameter) => [parameter.key, ''])),
@@ -59,15 +73,15 @@ export function ConnectForm({
 
   return (
     <Surface gap="lg">
-      <Text variant="heading">Connect your {model.name}</Text>
+      <Text variant="heading">{t('addAsset.connectTitle', { model: model.name })}</Text>
 
       <Controller
         control={control}
         name="name"
         render={({ field, fieldState }) => (
           <TextField
-            label="Name"
-            hint="What you want to call it in this household."
+            label={t('addAsset.nameLabel')}
+            hint={t('addAsset.nameHint')}
             onBlur={field.onBlur}
             onChangeText={field.onChange}
             testID="asset-name"
@@ -100,11 +114,11 @@ export function ConnectForm({
       ))}
 
       <Text variant="caption" tone="muted">
-        These are sent to the manufacturer integration and are never shown again.
+        {t('addAsset.credentialsNote')}
       </Text>
 
       <Button
-        label="Add asset"
+        label={t('addAsset.submit')}
         size="lg"
         loading={submitting}
         onPress={() => void handleSubmit(onSubmit)()}

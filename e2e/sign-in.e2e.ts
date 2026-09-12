@@ -3,7 +3,12 @@ import { by, device, element, expect } from 'detox';
 describe('Signing in', () => {
   beforeEach(async () => {
     // A fresh install each time, so a stored session cannot decide which shell opens.
-    await device.launchApp({ delete: true, newInstance: true });
+    // Pinned to English on iOS so assertions do not depend on the simulator's language.
+    await device.launchApp({
+      delete: true,
+      newInstance: true,
+      languageAndLocale: { language: 'en', locale: 'en-US' },
+    });
   });
 
   it('opens on the sign-in screen when there is no session', async () => {
@@ -15,7 +20,7 @@ describe('Signing in', () => {
     await element(by.id('sign-in-password')).typeText('password1');
     await element(by.id('sign-in-submit')).tap();
 
-    await expect(element(by.text('Enter a valid email address'))).toBeVisible();
+    await expect(element(by.id('sign-in-email-error'))).toBeVisible();
     await expect(element(by.id('sign-in-screen'))).toBeVisible();
   });
 

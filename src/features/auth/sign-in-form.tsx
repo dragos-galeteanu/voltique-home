@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useSignInMutation } from '@/api/generated/endpoints';
@@ -10,20 +12,26 @@ import { useAppDispatch } from '@/store/hooks';
 import { signedIn } from './auth-slice';
 import type { UserRole } from './types';
 
-const signInSchema = z.object({
-  email: z.email('Enter a valid email address'),
-  password: z.string().min(8, 'At least 8 characters'),
-});
+/** Built per render of the screen so validation messages follow the active language. */
+function buildSignInSchema(t: (key: 'auth.invalidEmail' | 'auth.shortPassword') => string) {
+  return z.object({
+    email: z.email(t('auth.invalidEmail')),
+    password: z.string().min(8, t('auth.shortPassword')),
+  });
+}
 
-type SignInValues = z.infer<typeof signInSchema>;
+type SignInValues = z.infer<ReturnType<typeof buildSignInSchema>>;
 
 export function SignInForm() {
   const dispatch = useAppDispatch();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [signIn, { isLoading, error }] = useSignInMutation();
 
+  const schema = useMemo(() => buildSignInSchema(t), [t]);
+
   const { control, handleSubmit } = useForm<SignInValues>({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   });
 
@@ -46,7 +54,7 @@ export function SignInForm() {
       );
     } catch {
       // The rejection is already in `error`; the toast tells the user something happened.
-      showToast({ message: 'Could not sign you in', tone: 'danger' });
+      showToast({ message: t('auth.signInFailed'), tone: 'danger' });
     }
   }
 
@@ -57,13 +65,13 @@ export function SignInForm() {
         name="email"
         render={({ field, fieldState }) => (
           <TextField
-            label="Email"
+            label={t('auth.email')}
             autoCapitalize="none"
             autoComplete="email"
             inputMode="email"
             onBlur={field.onBlur}
             onChangeText={field.onChange}
-            placeholder="you@example.com"
+            placeholder={t('auth.emailPlaceholder')}
             testID="sign-in-email"
             value={field.value}
             error={fieldState.error?.message}
@@ -76,7 +84,7 @@ export function SignInForm() {
         name="password"
         render={({ field, fieldState }) => (
           <TextField
-            label="Password"
+            label={t('auth.password')}
             autoCapitalize="none"
             autoComplete="current-password"
             onBlur={field.onBlur}
@@ -91,12 +99,12 @@ export function SignInForm() {
 
       {error ? (
         <Text tone="danger" variant="caption" testID="sign-in-error">
-          {getErrorMessage(error, 'Could not sign you in')}
+          {getErrorMessage(error, t('auth.signInFailed'))}
         </Text>
       ) : null}
 
       <Button
-        label="Sign in"
+        label={t('auth.signIn')}
         size="lg"
         loading={isLoading}
         onPress={() => void handleSubmit(onSubmit)()}

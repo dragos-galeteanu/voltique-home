@@ -1,0 +1,136 @@
+{
+  "app": {
+    "name": "Voltique Home",
+    "tagline": "Tieni traccia di ciò che la tua casa produce, accumula e consuma."
+  },
+  "common": {
+    "cancel": "Annulla",
+    "remove": "Rimuovi",
+    "tryAgain": "Riprova",
+    "noValue": "—",
+    "never": "mai",
+    "justNow": "adesso",
+    "minutesAgo": "{{count}} min fa",
+    "hoursAgo": "{{count}} h fa",
+    "daysAgo": "{{count}} g fa",
+    "unknown": "sconosciuto"
+  },
+  "errors": {
+    "generic": "Qualcosa è andato storto",
+    "title": "Non ha funzionato",
+    "offline": "Server irraggiungibile. Controlla la connessione.",
+    "timeout": "Il server ha impiegato troppo tempo.",
+    "renderTitle": "Qualcosa è andato storto"
+  },
+  "auth": {
+    "email": "E-mail",
+    "emailPlaceholder": "tu@esempio.it",
+    "password": "Password",
+    "signIn": "Accedi",
+    "signInFailed": "Accesso non riuscito",
+    "signedOut": "Disconnesso",
+    "invalidEmail": "Inserisci un indirizzo e-mail valido",
+    "shortPassword": "Almeno 8 caratteri",
+    "devShortcutNote": "Solo per lo sviluppo. Il mock accede sempre come consumatore, quindi questa è l'unica via verso l'area installatore finché il backend non potrà variare il ruolo.",
+    "continueAsInstaller": "Continua come installatore"
+  },
+  "tabs": {
+    "dashboard": "Dashboard",
+    "assets": "Dispositivi",
+    "alerts": "Avvisi",
+    "settings": "Impostazioni",
+    "households": "Abitazioni"
+  },
+  "household": {
+    "switcher": "Cambia abitazione",
+    "none": "Nessuna abitazione",
+    "title": "Abitazioni",
+    "assetCount_one": "{{count}} dispositivo",
+    "assetCount_other": "{{count}} dispositivi",
+    "create": "Crea abitazione",
+    "newTitle": "Nuova abitazione",
+    "name": "Nome",
+    "namePlaceholder": "Via dei Platani",
+    "nameRequired": "Dai un nome all'abitazione",
+    "nameTooLong": "Massimo 80 caratteri",
+    "timezone": "Fuso orario",
+    "timezoneHint": "I totali giornalieri e mensili sono calcolati in questo fuso.",
+    "timezoneRequired": "Il fuso orario è obbligatorio",
+    "created": "{{name}} creata",
+    "createFailed": "Creazione non riuscita",
+    "emptyTitle": "Nessuna abitazione",
+    "emptyDescription": "Crea prima un'abitazione. Dispositivi, avvisi e accesso installatore dipendono da essa."
+  },
+  "assets": {
+    "title": "Dispositivi",
+    "add": "Aggiungi dispositivo",
+    "now": "Adesso",
+    "today": "Oggi",
+    "lastSeen": "Visto {{time}}",
+    "holdToRemove": "Tieni premuto per rimuovere questo dispositivo",
+    "emptyTitle": "Nessun dispositivo",
+    "emptyDescription": "Aggiungi una stazione di ricarica, un inverter, una batteria o una pompa di calore per monitorare questa abitazione.",
+    "removeTitle": "Rimuovere {{name}}?",
+    "removeExplanation": "Lo storico resta sul server, ma il dispositivo non compare più in questa abitazione e non vengono raccolte nuove letture.",
+    "removed": "{{name}} rimosso",
+    "removeFailed": "Impossibile rimuovere il dispositivo",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "faulted": "Guasto",
+      "commissioning": "Connessione",
+      "unknown": "Sconosciuto"
+    }
+  },
+  "addAsset": {
+    "title": "Aggiungi dispositivo",
+    "toHousehold": "a {{name}}",
+    "step": "Passaggio {{number}}",
+    "stepType": "Di cosa si tratta?",
+    "stepManufacturer": "Chi lo ha prodotto?",
+    "stepModel": "Quale modello?",
+    "noManufacturers": "Nessun produttore disponibile per ora.",
+    "ratedPower": "{{power}} nominali",
+    "connectTitle": "Collega il tuo {{model}}",
+    "nameLabel": "Nome",
+    "nameHint": "Come vuoi chiamarlo in questa abitazione.",
+    "nameRequired": "Dai un nome al dispositivo",
+    "nameTooLong": "Massimo 80 caratteri",
+    "credentialsNote": "Questi dati vengono inviati all'integrazione del produttore e non saranno più mostrati.",
+    "fieldRequired": "{{field}} è obbligatorio",
+    "fieldInvalid": "{{field}} non è valido",
+    "submit": "Aggiungi dispositivo",
+    "connecting": "{{name}} si sta collegando",
+    "failed": "Impossibile aggiungere il dispositivo",
+    "needHouseholdTitle": "Scegli prima un'abitazione",
+    "needHouseholdDescription": "I dispositivi appartengono a un'abitazione, quindi ne serve una prima di poterli aggiungere."
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "signedInAs": "Accesso effettuato come",
+    "unknownUser": "Sconosciuto",
+    "role": "Ruolo: {{role}}",
+    "roleNone": "nessuno",
+    "appearance": "Aspetto",
+    "themeSystem": "Sistema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro",
+    "language": "Lingua",
+    "signOut": "Esci"
+  },
+  "roles": {
+    "consumer": "consumatore",
+    "installer": "installatore"
+  },
+  "placeholder": {
+    "plannedFor": "Previsto per {{milestone}}",
+    "dashboardTitle": "Dashboard",
+    "dashboardDescription": "Produzione, consumo e stato della batteria dell'abitazione nel tempo, alimentati dagli endpoint di telemetria.",
+    "alertsTitle": "Avvisi",
+    "alertsDescription": "Guasti aperti nell'abitazione, confermati e risolti da qui.",
+    "installerHouseholdsTitle": "Abitazioni",
+    "installerHouseholdsDescription": "Le abitazioni che ti hanno invitato, con i dispositivi e i log a cui hai accesso.",
+    "installerAlertsTitle": "Avvisi",
+    "installerAlertsDescription": "Guasti in tutte le abitazioni che gestisci, con i log grezzi dei dispositivi."
+  }
+}

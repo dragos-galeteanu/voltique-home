@@ -1,5 +1,7 @@
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
+import { i18n } from '@/i18n';
+
 import { isProblemDetails, type ProblemDetails } from './types';
 
 /**
@@ -13,18 +15,23 @@ export function getProblem(error: unknown): ProblemDetails | null {
   return isProblemDetails(data) ? data : null;
 }
 
-/** A message safe to put in front of a user, whatever went wrong. */
-export function getErrorMessage(error: unknown, fallback = 'Something went wrong'): string {
+/**
+ * A message safe to put in front of a user, whatever went wrong.
+ *
+ * Problem details come from the server already worded for a person, and the API is
+ * expected to localise them; everything else is worded here.
+ */
+export function getErrorMessage(error: unknown, fallback?: string): string {
   const problem = getProblem(error);
   if (problem) return problem.detail ?? problem.title;
 
   if (error && typeof error === 'object' && 'status' in error) {
     const status = (error as FetchBaseQueryError).status;
-    if (status === 'FETCH_ERROR') return 'Cannot reach the server. Check your connection.';
-    if (status === 'TIMEOUT_ERROR') return 'The server took too long to respond.';
+    if (status === 'FETCH_ERROR') return i18n.t('errors.offline');
+    if (status === 'TIMEOUT_ERROR') return i18n.t('errors.timeout');
   }
 
-  return fallback;
+  return fallback ?? i18n.t('errors.generic');
 }
 
 /** True when retrying the same request could plausibly succeed. */

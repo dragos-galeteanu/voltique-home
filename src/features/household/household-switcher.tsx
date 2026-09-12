@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import type { Household } from '@/api/generated/endpoints';
@@ -23,19 +24,20 @@ export function HouseholdSwitcher({
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Switch household"
+        accessibilityLabel={t('household.switcher')}
         onPress={() => setOpen(true)}
         style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}
         testID="household-switcher"
       >
         <Text variant="display" numberOfLines={1} style={{ flexShrink: 1 }}>
-          {selected?.name ?? 'No household'}
+          {selected?.name ?? t('household.none')}
         </Text>
         <Ionicons name="chevron-down" size={20} color={theme.colors.textSecondary} />
       </Pressable>
@@ -43,7 +45,7 @@ export function HouseholdSwitcher({
       <Sheet
         visible={open}
         onClose={() => setOpen(false)}
-        title="Households"
+        title={t('household.title')}
         testID="household-sheet"
       >
         <View style={{ gap: theme.spacing.sm }}>
@@ -69,7 +71,7 @@ export function HouseholdSwitcher({
                 <View style={{ gap: 2, flexShrink: 1 }}>
                   <Text variant="heading">{household.name}</Text>
                   <Text variant="caption" tone="muted">
-                    {household.assetCount} assets
+                    {t('household.assetCount', { count: household.assetCount })}
                   </Text>
                 </View>
                 {isSelected ? (
@@ -81,7 +83,7 @@ export function HouseholdSwitcher({
         </View>
 
         <Button
-          label="Create household"
+          label={t('household.create')}
           variant="secondary"
           testID="create-household"
           onPress={() => {

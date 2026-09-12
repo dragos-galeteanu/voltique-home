@@ -1,0 +1,136 @@
+{
+  "app": {
+    "name": "Voltique Home",
+    "tagline": "Behalten Sie im Blick, was Ihr Zuhause erzeugt, speichert und verbraucht."
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "tryAgain": "Erneut versuchen",
+    "noValue": "—",
+    "never": "nie",
+    "justNow": "gerade eben",
+    "minutesAgo": "vor {{count}} Min.",
+    "hoursAgo": "vor {{count}} Std.",
+    "daysAgo": "vor {{count}} Tg.",
+    "unknown": "unbekannt"
+  },
+  "errors": {
+    "generic": "Etwas ist schiefgelaufen",
+    "title": "Das hat nicht geklappt",
+    "offline": "Server nicht erreichbar. Prüfen Sie Ihre Verbindung.",
+    "timeout": "Der Server hat zu lange gebraucht.",
+    "renderTitle": "Etwas ist schiefgelaufen"
+  },
+  "auth": {
+    "email": "E-Mail",
+    "emailPlaceholder": "sie@beispiel.de",
+    "password": "Passwort",
+    "signIn": "Anmelden",
+    "signInFailed": "Anmeldung nicht möglich",
+    "signedOut": "Abgemeldet",
+    "invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "shortPassword": "Mindestens 8 Zeichen",
+    "devShortcutNote": "Nur für die Entwicklung. Das Mock meldet immer als Verbraucher an, daher führt nur dieser Weg in die Installateursansicht, bis das Backend die Rolle variieren kann.",
+    "continueAsInstaller": "Als Installateur fortfahren"
+  },
+  "tabs": {
+    "dashboard": "Übersicht",
+    "assets": "Geräte",
+    "alerts": "Warnungen",
+    "settings": "Einstellungen",
+    "households": "Haushalte"
+  },
+  "household": {
+    "switcher": "Haushalt wechseln",
+    "none": "Kein Haushalt",
+    "title": "Haushalte",
+    "assetCount_one": "{{count}} Gerät",
+    "assetCount_other": "{{count}} Geräte",
+    "create": "Haushalt anlegen",
+    "newTitle": "Neuer Haushalt",
+    "name": "Name",
+    "namePlaceholder": "Ahornstraße",
+    "nameRequired": "Geben Sie dem Haushalt einen Namen",
+    "nameTooLong": "Höchstens 80 Zeichen",
+    "timezone": "Zeitzone",
+    "timezoneHint": "Tages- und Monatssummen werden in dieser Zeitzone gebildet.",
+    "timezoneRequired": "Eine Zeitzone ist erforderlich",
+    "created": "{{name}} angelegt",
+    "createFailed": "Anlegen nicht möglich",
+    "emptyTitle": "Noch kein Haushalt",
+    "emptyDescription": "Legen Sie zuerst einen Haushalt an. Geräte, Warnungen und Installateurszugriff hängen daran."
+  },
+  "assets": {
+    "title": "Geräte",
+    "add": "Gerät hinzufügen",
+    "now": "Jetzt",
+    "today": "Heute",
+    "lastSeen": "Zuletzt gesehen {{time}}",
+    "holdToRemove": "Gedrückt halten, um dieses Gerät zu entfernen",
+    "emptyTitle": "Noch keine Geräte",
+    "emptyDescription": "Fügen Sie eine Ladestation, einen Wechselrichter, einen Speicher oder eine Wärmepumpe hinzu, um diesen Haushalt zu verfolgen.",
+    "removeTitle": "{{name}} entfernen?",
+    "removeExplanation": "Der Verlauf bleibt auf dem Server, aber das Gerät erscheint nicht mehr in diesem Haushalt und es werden keine neuen Messwerte erfasst.",
+    "removed": "{{name}} entfernt",
+    "removeFailed": "Gerät konnte nicht entfernt werden",
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "faulted": "Störung",
+      "commissioning": "Verbindet",
+      "unknown": "Unbekannt"
+    }
+  },
+  "addAsset": {
+    "title": "Gerät hinzufügen",
+    "toHousehold": "zu {{name}}",
+    "step": "Schritt {{number}}",
+    "stepType": "Worum handelt es sich?",
+    "stepManufacturer": "Wer hat es hergestellt?",
+    "stepModel": "Welches Modell?",
+    "noManufacturers": "Dafür sind noch keine Hersteller hinterlegt.",
+    "ratedPower": "{{power}} Nennleistung",
+    "connectTitle": "Verbinden Sie Ihr Gerät {{model}}",
+    "nameLabel": "Name",
+    "nameHint": "Wie Sie es in diesem Haushalt nennen möchten.",
+    "nameRequired": "Geben Sie dem Gerät einen Namen",
+    "nameTooLong": "Höchstens 80 Zeichen",
+    "credentialsNote": "Diese Angaben gehen an die Hersteller-Schnittstelle und werden nie wieder angezeigt.",
+    "fieldRequired": "{{field}} ist erforderlich",
+    "fieldInvalid": "{{field}} ist ungültig",
+    "submit": "Gerät hinzufügen",
+    "connecting": "{{name}} wird verbunden",
+    "failed": "Gerät konnte nicht hinzugefügt werden",
+    "needHouseholdTitle": "Wählen Sie zuerst einen Haushalt",
+    "needHouseholdDescription": "Geräte gehören zu einem Haushalt, daher muss zuerst einer vorhanden sein."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "signedInAs": "Angemeldet als",
+    "unknownUser": "Unbekannt",
+    "role": "Rolle: {{role}}",
+    "roleNone": "keine",
+    "appearance": "Darstellung",
+    "themeSystem": "System",
+    "themeLight": "Hell",
+    "themeDark": "Dunkel",
+    "language": "Sprache",
+    "signOut": "Abmelden"
+  },
+  "roles": {
+    "consumer": "Verbraucher",
+    "installer": "Installateur"
+  },
+  "placeholder": {
+    "plannedFor": "Geplant für {{milestone}}",
+    "dashboardTitle": "Übersicht",
+    "dashboardDescription": "Erzeugung, Verbrauch und Speicherstand des Haushalts im Zeitverlauf, gespeist aus den Telemetrie-Endpunkten.",
+    "alertsTitle": "Warnungen",
+    "alertsDescription": "Offene Störungen im Haushalt, hier bestätigt und geschlossen.",
+    "installerHouseholdsTitle": "Haushalte",
+    "installerHouseholdsDescription": "Haushalte, die Sie eingeladen haben, mit den Geräten und Protokollen, für die Sie freigegeben sind.",
+    "installerAlertsTitle": "Warnungen",
+    "installerAlertsDescription": "Störungen in allen von Ihnen betreuten Haushalten, mit den zugehörigen Geräteprotokollen."
+  }
+}

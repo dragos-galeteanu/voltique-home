@@ -37,7 +37,8 @@ describe('SignInForm', () => {
     await fireEvent.changeText(screen.getByTestId('sign-in-password'), 'password1');
     await fireEvent.press(screen.getByTestId('sign-in-submit'));
 
-    expect(await screen.findByText('Enter a valid email address')).toBeOnTheScreen();
+    expect(await screen.findByTestId('sign-in-email-error')).toBeOnTheScreen();
+    expect(screen.getByText('Enter a valid email address')).toBeOnTheScreen();
     expect(fetchMock.requests).toHaveLength(0);
   });
 

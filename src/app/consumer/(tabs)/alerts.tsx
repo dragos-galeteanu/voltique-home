@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next';
+
 import { PlaceholderScreen } from '@/components/placeholder-screen';
 
 export default function AlertsScreen() {
+  const { t } = useTranslation();
+
   return (
     <PlaceholderScreen
-      title="Alerts"
-      description="Open faults across the household, acknowledged and resolved from here."
-      milestone="M6"
+      title={t('placeholder.alertsTitle')}
+      description={t('placeholder.alertsDescription')}
+      milestone="M8"
       testID="consumer-alerts"
     />
   );

@@ -1,0 +1,136 @@
+{
+  "app": {
+    "name": "Voltique Home",
+    "tagline": "Suivez ce que votre logement produit, stocke et consomme."
+  },
+  "common": {
+    "cancel": "Annuler",
+    "remove": "Supprimer",
+    "tryAgain": "Réessayer",
+    "noValue": "—",
+    "never": "jamais",
+    "justNow": "à l'instant",
+    "minutesAgo": "il y a {{count}} min",
+    "hoursAgo": "il y a {{count}} h",
+    "daysAgo": "il y a {{count}} j",
+    "unknown": "inconnu"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "title": "Cela n'a pas fonctionné",
+    "offline": "Serveur injoignable. Vérifiez votre connexion.",
+    "timeout": "Le serveur a mis trop de temps à répondre.",
+    "renderTitle": "Une erreur est survenue"
+  },
+  "auth": {
+    "email": "E-mail",
+    "emailPlaceholder": "vous@exemple.fr",
+    "password": "Mot de passe",
+    "signIn": "Se connecter",
+    "signInFailed": "Connexion impossible",
+    "signedOut": "Déconnecté",
+    "invalidEmail": "Saisissez une adresse e-mail valide",
+    "shortPassword": "Au moins 8 caractères",
+    "devShortcutNote": "Réservé au développement. Le mock connecte toujours en tant que particulier, c'est donc le seul accès à l'espace installateur tant que le backend ne peut pas varier le rôle.",
+    "continueAsInstaller": "Continuer en tant qu'installateur"
+  },
+  "tabs": {
+    "dashboard": "Tableau de bord",
+    "assets": "Équipements",
+    "alerts": "Alertes",
+    "settings": "Réglages",
+    "households": "Logements"
+  },
+  "household": {
+    "switcher": "Changer de logement",
+    "none": "Aucun logement",
+    "title": "Logements",
+    "assetCount_one": "{{count}} équipement",
+    "assetCount_other": "{{count}} équipements",
+    "create": "Créer un logement",
+    "newTitle": "Nouveau logement",
+    "name": "Nom",
+    "namePlaceholder": "Rue des Érables",
+    "nameRequired": "Donnez un nom au logement",
+    "nameTooLong": "80 caractères maximum",
+    "timezone": "Fuseau horaire",
+    "timezoneHint": "Les totaux journaliers et mensuels sont calculés dans ce fuseau.",
+    "timezoneRequired": "Un fuseau horaire est requis",
+    "created": "{{name}} créé",
+    "createFailed": "Création impossible",
+    "emptyTitle": "Aucun logement",
+    "emptyDescription": "Créez d'abord un logement. Les équipements, les alertes et l'accès installateur en dépendent."
+  },
+  "assets": {
+    "title": "Équipements",
+    "add": "Ajouter un équipement",
+    "now": "Maintenant",
+    "today": "Aujourd'hui",
+    "lastSeen": "Vu {{time}}",
+    "holdToRemove": "Maintenez appuyé pour supprimer cet équipement",
+    "emptyTitle": "Aucun équipement",
+    "emptyDescription": "Ajoutez une borne de recharge, un onduleur, une batterie ou une pompe à chaleur pour suivre ce logement.",
+    "removeTitle": "Supprimer {{name}} ?",
+    "removeExplanation": "L'historique reste sur le serveur, mais l'équipement disparaît de ce logement et aucune nouvelle mesure n'est collectée.",
+    "removed": "{{name}} supprimé",
+    "removeFailed": "Suppression impossible",
+    "status": {
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "faulted": "En panne",
+      "commissioning": "Connexion",
+      "unknown": "Inconnu"
+    }
+  },
+  "addAsset": {
+    "title": "Ajouter un équipement",
+    "toHousehold": "à {{name}}",
+    "step": "Étape {{number}}",
+    "stepType": "De quoi s'agit-il ?",
+    "stepManufacturer": "Quel fabricant ?",
+    "stepModel": "Quel modèle ?",
+    "noManufacturers": "Aucun fabricant référencé pour le moment.",
+    "ratedPower": "{{power}} nominale",
+    "connectTitle": "Connectez votre {{model}}",
+    "nameLabel": "Nom",
+    "nameHint": "Le nom que vous voulez lui donner dans ce logement.",
+    "nameRequired": "Donnez un nom à l'équipement",
+    "nameTooLong": "80 caractères maximum",
+    "credentialsNote": "Ces informations sont transmises au fabricant et ne seront plus jamais affichées.",
+    "fieldRequired": "{{field}} est requis",
+    "fieldInvalid": "{{field}} n'est pas valide",
+    "submit": "Ajouter l'équipement",
+    "connecting": "{{name}} se connecte",
+    "failed": "Impossible d'ajouter cet équipement",
+    "needHouseholdTitle": "Choisissez d'abord un logement",
+    "needHouseholdDescription": "Un équipement appartient à un logement, il en faut donc un avant de pouvoir l'ajouter."
+  },
+  "settings": {
+    "title": "Réglages",
+    "signedInAs": "Connecté en tant que",
+    "unknownUser": "Inconnu",
+    "role": "Rôle : {{role}}",
+    "roleNone": "aucun",
+    "appearance": "Apparence",
+    "themeSystem": "Système",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "language": "Langue",
+    "signOut": "Se déconnecter"
+  },
+  "roles": {
+    "consumer": "particulier",
+    "installer": "installateur"
+  },
+  "placeholder": {
+    "plannedFor": "Prévu pour {{milestone}}",
+    "dashboardTitle": "Tableau de bord",
+    "dashboardDescription": "Production, consommation et état de la batterie du logement dans le temps, alimentés par les points de terminaison de télémétrie.",
+    "alertsTitle": "Alertes",
+    "alertsDescription": "Pannes ouvertes dans le logement, acquittées et résolues ici.",
+    "installerHouseholdsTitle": "Logements",
+    "installerHouseholdsDescription": "Les logements qui vous ont invité, avec les équipements et les journaux auxquels vous avez accès.",
+    "installerAlertsTitle": "Alertes",
+    "installerAlertsDescription": "Pannes dans tous les logements dont vous vous occupez, avec les journaux bruts correspondants."
+  }
+}

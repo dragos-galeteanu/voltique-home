@@ -37,6 +37,8 @@ function resolveVariant(): AppVariant {
 
 export default ({ config }: ConfigContext): ExpoConfig => {
   const variant = resolveVariant();
+  // One number for both stores and for the release Sentry reports against.
+  const buildNumber = process.env.IOS_BUILD_NUMBER ?? process.env.ANDROID_VERSION_CODE ?? '1';
   const { name: displayName, identifier, apiOrigin } = VARIANTS[variant];
 
   return {
@@ -57,11 +59,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       infoPlist: {
         CFBundleDisplayName: displayName,
       },
-      buildNumber: process.env.IOS_BUILD_NUMBER ?? '1',
+      buildNumber,
     },
     android: {
       package: identifier,
-      versionCode: Number(process.env.ANDROID_VERSION_CODE ?? 1),
+      versionCode: Number(buildNumber),
       predictiveBackGestureEnabled: false,
       adaptiveIcon: {
         backgroundColor: '#0B1220',
@@ -73,6 +75,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       'expo-router',
       'expo-font',
+      [
+        '@sentry/react-native/expo',
+        {
+          // Source maps are uploaded during the native build when a token is present.
+          organization: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT,
+        },
+      ],
       ['./plugins/with-android-app-name', { name: displayName }],
       [
         'expo-splash-screen',
@@ -91,6 +101,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       appVariant: variant,
       // The REST prefix is appended by the API client, never hardcoded downstream.
       apiOrigin: process.env.API_ORIGIN ?? apiOrigin,
+      appVersion: version,
+      buildNumber,
+      sentryDsn: process.env.SENTRY_DSN,
     },
   };
 };

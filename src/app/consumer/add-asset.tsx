@@ -1,6 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, View } from 'react-native';
 
 import {
@@ -14,6 +15,7 @@ import { EmptyState, ErrorState, LoadingState } from '@/components/states';
 import { Button, Screen, Surface, Text, useTheme, useToast } from '@/design-system';
 import { ConnectForm, type ConnectValues } from '@/features/assets/connect-form';
 import { useSelectedHousehold } from '@/features/household/use-selected-household';
+import { formatPower } from '@/lib/format-energy';
 
 /**
  * Add an asset: pick what it is, who made it and which model, then supply whatever that
@@ -24,6 +26,7 @@ export default function AddAssetScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const { household } = useSelectedHousehold();
 
   const [assetTypeId, setAssetTypeId] = useState<string | null>(null);
@@ -52,10 +55,13 @@ export default function AddAssetScreen() {
         },
       }).unwrap();
 
-      showToast({ message: `${asset.name} is connecting`, tone: 'success' });
+      showToast({ message: t('addAsset.connecting', { name: asset.name }), tone: 'success' });
       router.back();
     } catch (error) {
-      showToast({ message: getErrorMessage(error, 'Could not add that asset'), tone: 'danger' });
+      showToast({
+        message: getErrorMessage(error, t('addAsset.failed')),
+        tone: 'danger',
+      });
     }
   }
 
@@ -63,8 +69,8 @@ export default function AddAssetScreen() {
     return (
       <Screen testID="add-asset-screen">
         <EmptyState
-          title="Pick a household first"
-          description="Assets belong to a household, so one has to exist before you can add to it."
+          title={t('addAsset.needHouseholdTitle')}
+          description={t('addAsset.needHouseholdDescription')}
         />
       </Screen>
     );
@@ -73,11 +79,11 @@ export default function AddAssetScreen() {
   return (
     <Screen scrollable testID="add-asset-screen">
       <View style={{ gap: 4 }}>
-        <Text variant="display">Add asset</Text>
-        <Text tone="secondary">to {household.name}</Text>
+        <Text variant="display">{t('addAsset.title')}</Text>
+        <Text tone="secondary">{t('addAsset.toHousehold', { name: household.name })}</Text>
       </View>
 
-      <Step title="What is it?" step={1}>
+      <Step title={t('addAsset.stepType')} step={1}>
         {assetTypes.isLoading ? (
           <LoadingState />
         ) : assetTypes.error ? (
@@ -103,13 +109,13 @@ export default function AddAssetScreen() {
       </Step>
 
       {assetTypeId ? (
-        <Step title="Who made it?" step={2}>
+        <Step title={t('addAsset.stepManufacturer')} step={2}>
           {manufacturers.isLoading ? (
             <LoadingState />
           ) : manufacturers.error ? (
             <ErrorState error={manufacturers.error} onRetry={() => void manufacturers.refetch()} />
           ) : (manufacturers.data ?? []).length === 0 ? (
-            <Text tone="secondary">No manufacturers listed for this yet.</Text>
+            <Text tone="secondary">{t('addAsset.noManufacturers')}</Text>
           ) : (
             <View style={{ gap: theme.spacing.sm }}>
               {(manufacturers.data ?? []).map((manufacturer) => (
@@ -130,7 +136,7 @@ export default function AddAssetScreen() {
       ) : null}
 
       {manufacturerId ? (
-        <Step title="Which model?" step={3}>
+        <Step title={t('addAsset.stepModel')} step={3}>
           {models.isLoading ? (
             <LoadingState />
           ) : models.error ? (
@@ -141,7 +147,11 @@ export default function AddAssetScreen() {
                 <Option
                   key={candidate.id}
                   label={candidate.name}
-                  detail={candidate.ratedPowerW ? `${candidate.ratedPowerW} W rated` : undefined}
+                  detail={
+                    candidate.ratedPowerW
+                      ? t('addAsset.ratedPower', { power: formatPower(candidate.ratedPowerW) })
+                      : undefined
+                  }
                   selected={modelId === candidate.id}
                   testID={`model-${candidate.id}`}
                   onPress={() => setModelId(candidate.id)}
@@ -154,24 +164,18 @@ export default function AddAssetScreen() {
 
       {model ? <ConnectForm model={model} submitting={creating} onSubmit={onSubmit} /> : null}
 
-      <Button label="Cancel" variant="ghost" onPress={() => router.back()} />
+      <Button label={t('common.cancel')} variant="ghost" onPress={() => router.back()} />
     </Screen>
   );
 }
 
-function Step({
-  title,
-  step,
-  children,
-}: {
-  title: string;
-  step: number;
-  children: React.ReactNode;
-}) {
+function Step({ title, step, children }: { title: string; step: number; children: ReactNode }) {
+  const { t } = useTranslation();
+
   return (
     <Surface gap="md">
       <Text variant="label" tone="muted">
-        Step {step}
+        {t('addAsset.step', { number: step })}
       </Text>
       <Text variant="heading">{title}</Text>
       {children}

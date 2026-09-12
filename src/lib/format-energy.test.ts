@@ -1,4 +1,10 @@
+import { changeLocale, FALLBACK_LOCALE } from '@/i18n';
+
 import { formatEnergy, formatPercent, formatPower, formatRelativeTime } from './format-energy';
+
+afterEach(async () => {
+  await changeLocale(FALLBACK_LOCALE);
+});
 
 describe('formatPower', () => {
   it('keeps small values in watts', () => {
@@ -69,5 +75,37 @@ describe('formatRelativeTime', () => {
 
   it('does not crash on a malformed timestamp', () => {
     expect(formatRelativeTime('not a date', now)).toBe('unknown');
+  });
+});
+
+describe('locale awareness', () => {
+  it('uses the decimal separator of the requested locale', () => {
+    expect(formatPower(4210, 'de')).toBe('4,21 kW');
+    expect(formatPower(4210, 'fr')).toBe('4,21 kW');
+    expect(formatEnergy(18400, 'es')).toBe('18,4 kWh');
+  });
+
+  it('follows the active language when no locale is given', async () => {
+    await changeLocale('de');
+    expect(formatPower(4210)).toBe('4,21 kW');
+
+    await changeLocale('en');
+    expect(formatPower(4210)).toBe('4.21 kW');
+  });
+
+  it('translates the relative times it produces', async () => {
+    const now = Date.parse('2026-09-12T09:00:00Z');
+
+    await changeLocale('de');
+    expect(formatRelativeTime('2026-09-12T08:20:00Z', now)).toBe('vor 40 Min.');
+    expect(formatRelativeTime(null, now)).toBe('nie');
+
+    await changeLocale('fr');
+    expect(formatRelativeTime('2026-09-12T04:00:00Z', now)).toBe('il y a 5 h');
+  });
+
+  it('marks a missing value the same way in every language', async () => {
+    await changeLocale('it');
+    expect(formatPercent(null)).toBe('—');
   });
 });

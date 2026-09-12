@@ -25,6 +25,9 @@ module.exports = defineConfig([
       'simple-import-sort/exports': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
+      // i18next exports both a default instance and same-named functions, which makes
+      // this rule fire on correct code such as i18next.use() and i18next.changeLanguage().
+      'import/no-named-as-default-member': 'off',
     },
   },
   {

@@ -15,14 +15,23 @@ jest.mock('expo-secure-store', () => ({
   WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'whenUnlockedThisDeviceOnly',
 }));
 
+// Device language is a native lookup; tests run in English unless one asks otherwise.
+jest.mock('expo-localization', () => ({
+  getLocales: () => [{ languageCode: 'en', languageTag: 'en-US', regionCode: 'US' }],
+}));
+
 // app.config.ts is resolved at build time, so tests supply the same shape directly.
 jest.mock('expo-constants', () => ({
   __esModule: true,
+  ExecutionEnvironment: { Bare: 'bare', Standalone: 'standalone', StoreClient: 'storeClient' },
   default: {
+    executionEnvironment: 'bare',
     expoConfig: {
       extra: {
         appVariant: 'development',
         apiOrigin: 'http://localhost:4010',
+        appVersion: '0.0.0-test',
+        buildNumber: '0',
       },
     },
   },

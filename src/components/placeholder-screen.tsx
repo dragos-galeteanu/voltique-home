@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Screen, StatusPill, Surface, Text } from '@/design-system';
 
 export type PlaceholderScreenProps = {
@@ -14,11 +16,13 @@ export function PlaceholderScreen({
   milestone,
   testID,
 }: PlaceholderScreenProps) {
+  const { t } = useTranslation();
+
   return (
     <Screen testID={testID}>
       <Text variant="display">{title}</Text>
       <Surface gap="lg">
-        <StatusPill label={`Planned for ${milestone}`} tone="info" />
+        <StatusPill label={t('placeholder.plannedFor', { milestone })} tone="info" />
         <Text tone="secondary">{description}</Text>
       </Surface>
     </Screen>
