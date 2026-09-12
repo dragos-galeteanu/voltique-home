@@ -1,26 +1,54 @@
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'react-native';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as StoreProvider } from 'react-redux';
+
+import { RouteErrorBoundary } from '@/components/route-error-boundary';
+import { ThemeProvider, ToastProvider } from '@/design-system';
+import { selectAuthStatus } from '@/features/auth/auth-slice';
+import { useSessionRestore } from '@/features/auth/use-session-restore';
+import { selectThemePreference } from '@/features/ui/ui-slice';
+import { store } from '@/store';
+import { useAppSelector } from '@/store/hooks';
+
+void SplashScreen.preventAutoHideAsync();
+
+export { RouteErrorBoundary as ErrorBoundary };
+
+export default function RootLayout() {
+  return (
+    <StoreProvider store={store}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <ThemedApp />
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </StoreProvider>
+  );
+}
 
 /**
- * Root layout. Providers that every screen depends on are mounted here.
- * The Redux store, API client and design-system theme provider land in M1.
+ * Lives inside the store provider so the theme can follow the user's preference and
+ * the splash can be held until the stored session has been read.
  */
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function ThemedApp() {
+  const preference = useAppSelector(selectThemePreference);
+  const status = useAppSelector(selectAuthStatus);
+
+  useSessionRestore();
+
+  useEffect(() => {
+    if (status !== 'restoring') void SplashScreen.hideAsync();
+  }, [status]);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <StatusBar style="auto" />
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-          </Stack>
-        </ThemeProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <ThemeProvider preference={preference}>
+      <ToastProvider>
+        <StatusBar style="auto" />
+        <Stack screenOptions={{ headerShown: false }} />
+      </ToastProvider>
+    </ThemeProvider>
   );
 }

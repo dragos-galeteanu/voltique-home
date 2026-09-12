@@ -69,16 +69,49 @@ emulator the host machine is `10.0.2.2`, not `localhost`.
 ## Layout
 
 ```
-app.config.ts      build-time config and per-variant identity
-src/app/           expo-router routes
-src/config/        validated runtime configuration
-assets/            icons and splash
+app.config.ts        build-time config and per-variant identity
+plugins/             Expo config plugins for native tweaks
+src/app/             expo-router routes
+src/api/             RTK Query client, base query, shared wire types
+src/store/           store, typed hooks, listener middleware
+src/features/        auth, ui, settings; one folder per domain
+src/design-system/   tokens, themes, primitives, toast
+src/components/      shared components that are not design primitives
+assets/              icons and splash
 ```
+
+## Architecture
+
+**State.** One Redux store. Client state lives in slices under `src/features`; server
+state belongs to the single RTK Query API slice, which features extend with
+`injectEndpoints` so no file grows with the API surface. Side effects such as session
+persistence run in listener middleware, keeping reducers pure.
+
+**Auth.** The session is held in the `auth` slice and mirrored into the device keychain.
+On a cold start the app holds the splash screen while the stored session is read, so no
+screen renders against a half-known identity. The API client attaches the access token,
+and on a 401 it refreshes once, replays the request, and signs the user out if the
+refresh fails. Concurrent 401s share one refresh.
+
+**Roles.** Consumer and installer each own a navigation shell under `src/app/consumer`
+and `src/app/installer`, guarded by a role gate that redirects rather than erroring.
+These are real path segments, not route groups, because groups are stripped from the URL
+and both shells have an alerts and a settings screen.
+
+**Design system.** Screens never name a colour. They name a semantic role such as
+`production` or `danger`, which the theme maps per mode. React Navigation's theme is
+derived from the same source, so headers and tab bars cannot drift.
 
 ## Conventions
 
 Commits follow Conventional Commits, enforced by commitlint on `commit-msg`.
 Staged files are linted and formatted on `pre-commit`.
+
+## Known gaps
+
+Typed routes are generated into `.expo/types` by the dev server, and that folder is not
+committed. A CI typecheck therefore validates everything except route paths until the
+pipeline regenerates them, which M5 sorts out.
 
 ## Known toolchain gap
 
