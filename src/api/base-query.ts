@@ -17,9 +17,28 @@ import type { AuthTokens } from '@/features/auth/types';
  */
 type AuthAwareState = { auth: AuthState };
 
+/** How long a single request may take before it is abandoned. */
+const REQUEST_TIMEOUT_MS = 20_000;
+
+/**
+ * Applies the timeout ourselves rather than through fetchBaseQuery's `timeout` option.
+ * That option schedules an abort timer it never clears, so every completed request would
+ * leave a timer pending for the full twenty seconds.
+ */
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: env.apiBaseUrl,
-  timeout: 20_000,
+  fetchFn: fetchWithTimeout,
   prepareHeaders: (headers, { getState }) => {
     const token = selectAccessToken(getState() as AuthAwareState);
     if (token) headers.set('authorization', `Bearer ${token}`);

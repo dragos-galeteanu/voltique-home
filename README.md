@@ -127,6 +127,27 @@ exactly the URLs it sends to production.
 Since the spec's examples are what the mock returns, they double as the fixtures for
 end-to-end runs. Keep them realistic.
 
+## Testing
+
+Two layers, with different jobs.
+
+**Jest** covers logic and components, and runs as two projects. Logic, including the API
+client, runs in a plain Node environment; components run under the Expo preset because
+they need the React Native runtime. The split keeps the whole suite around two seconds.
+Requests are stubbed by a small fetch mock in `src/test`, which both proves what the
+client sent and lets a test assert how many times it sent it.
+
+**Detox** drives the real app on a simulator or an emulator against the Prism mock, so
+the data is identical on every run. The native projects are generated, so a build needs
+`npm run prebuild` first, and the mock has to be running:
+
+```bash
+npm run mock:start && npm run e2e:build:ios && npm run e2e:test:ios
+```
+
+Every interactive element carries a `testID`, which is what both layers select on.
+Detox on Android points the app at `10.0.2.2`, since an emulator cannot see `localhost`.
+
 ## Architecture
 
 **State.** One Redux store. Client state lives in slices under `src/features`; server

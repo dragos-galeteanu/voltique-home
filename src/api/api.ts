@@ -11,6 +11,9 @@ import { baseQueryWithReauth } from './base-query';
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
+  // RTK Query keeps an unused cache entry for a minute, holding a removal timer that
+  // would outlive a Jest test and report as a leak. Tests drop entries at once.
+  keepUnusedDataFor: process.env.NODE_ENV === 'test' ? 0 : 60,
   tagTypes: [
     'Auth',
     'CurrentUser',

@@ -1,17 +1,17 @@
-import { isAnyOf } from '@reduxjs/toolkit';
-
-import { startAppListening } from '@/store/listener';
+import { isAnyOf, type ListenerMiddlewareInstance } from '@reduxjs/toolkit';
 
 import type { AuthState } from './auth-slice';
 import { signedIn, signedOut, tokensRefreshed } from './auth-slice';
 import { clearStoredSession, writeStoredSession } from './token-storage';
 
+type StartListening = ListenerMiddlewareInstance['startListening'];
+
 /**
  * Mirrors the session into secure storage whenever it changes, so a cold start can
- * restore it. Registered once at store creation.
+ * restore it. Registered once per store.
  */
-export function registerAuthListeners() {
-  startAppListening({
+export function registerAuthListeners(startListening: StartListening) {
+  startListening({
     matcher: isAnyOf(signedIn, tokensRefreshed),
     effect: async (_action, listenerApi) => {
       const { auth } = listenerApi.getState() as { auth: AuthState };
@@ -26,7 +26,7 @@ export function registerAuthListeners() {
     },
   });
 
-  startAppListening({
+  startListening({
     actionCreator: signedOut,
     effect: async () => {
       try {
