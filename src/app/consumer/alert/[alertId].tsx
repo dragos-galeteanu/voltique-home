@@ -161,7 +161,7 @@ export default function AlertDetailScreen() {
             <Button
               label={t('alerts.viewLogs')}
               variant="secondary"
-              onPress={() => router.push(`/consumer/asset/${assetId}/logs`)}
+              onPress={() => router.push(`/logs/${assetId}`)}
               testID="alert-view-logs"
             />
           ) : null}

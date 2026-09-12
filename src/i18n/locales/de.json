@@ -142,6 +142,47 @@
       "connectivity": "Verbindungsverlust"
     }
   },
+  "access": {
+    "title": "Wer das sehen darf",
+    "people": "Personen",
+    "pending": "Offene Einladungen",
+    "noPending": "Keine offenen Einladungen.",
+    "inviteSomeone": "Jemanden einladen",
+    "sendInvite": "Einladung senden",
+    "invited": "Einladung an {{email}} gesendet",
+    "inviteFailed": "Einladung konnte nicht gesendet werden",
+    "revoke": "Zurückziehen",
+    "revoked": "Einladung zurückgezogen",
+    "revokeFailed": "Einladung konnte nicht zurückgezogen werden",
+    "expires": "Läuft ab {{time}}",
+    "emailRequired": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "removed": "{{name}} hat keinen Zugriff mehr",
+    "removeFailed": "Person konnte nicht entfernt werden",
+    "removeTitle": "{{name}} entfernen?",
+    "removeExplanation": "Der Zugriff endet sofort. Hinzugefügte Geräte bleiben im Haushalt.",
+    "residentNote": "Ein Mitbewohner sieht alles in diesem Haushalt und kann Geräte hinzufügen.",
+    "installerNote": "Ein Installateur sieht Ihre Geräte, deren Protokolle und Störungen. Nicht Ihre Haushaltseinstellungen.",
+    "role": {
+      "owner": "Eigentümer",
+      "resident": "Mitbewohner",
+      "installer": "Installateur"
+    }
+  },
+  "invite": {
+    "title": "Einladung",
+    "accepted": "Sie haben jetzt Zugriff auf {{name}}.",
+    "failed": "Diese Einladung ist nicht mehr gültig.",
+    "continue": "Weiter"
+  },
+  "installer": {
+    "openFaults_one": "{{count}} Störung",
+    "openFaults_other": "{{count}} Störungen",
+    "openFaultsHeading": "Offene Störungen",
+    "healthy": "Alles in Ordnung",
+    "noFaults": "Nichts erfordert Aufmerksamkeit.",
+    "emptyTitle": "Noch keine Haushalte",
+    "emptyDescription": "Haushalte erscheinen hier, sobald Sie jemand einlädt."
+  },
   "logs": {
     "title": "Geräteprotokolle",
     "empty": "Dieses Gerät hat noch nichts gemeldet.",
@@ -195,7 +236,8 @@
     "themeLight": "Hell",
     "themeDark": "Dunkel",
     "language": "Sprache",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "access": "Zugriff auf diesen Haushalt"
   },
   "roles": {
     "consumer": "Verbraucher",

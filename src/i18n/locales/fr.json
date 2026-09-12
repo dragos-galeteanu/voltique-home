@@ -142,6 +142,47 @@
       "connectivity": "Perte de contact"
     }
   },
+  "access": {
+    "title": "Qui peut voir ceci",
+    "people": "Personnes",
+    "pending": "Invitations en attente",
+    "noPending": "Aucune invitation en attente.",
+    "inviteSomeone": "Inviter quelqu un",
+    "sendInvite": "Envoyer l invitation",
+    "invited": "Invitation envoyée à {{email}}",
+    "inviteFailed": "Impossible d envoyer cette invitation",
+    "revoke": "Révoquer",
+    "revoked": "Invitation révoquée",
+    "revokeFailed": "Impossible de révoquer cette invitation",
+    "expires": "Expire {{time}}",
+    "emailRequired": "Saisissez une adresse e-mail valide",
+    "removed": "{{name}} n a plus accès",
+    "removeFailed": "Impossible de retirer cette personne",
+    "removeTitle": "Retirer {{name}} ?",
+    "removeExplanation": "L accès prend fin immédiatement. Les équipements ajoutés restent dans le logement.",
+    "residentNote": "Un résident voit tout dans ce logement et peut ajouter des équipements.",
+    "installerNote": "Un installateur voit vos équipements, leurs journaux et leurs pannes. Pas vos réglages.",
+    "role": {
+      "owner": "Propriétaire",
+      "resident": "Résident",
+      "installer": "Installateur"
+    }
+  },
+  "invite": {
+    "title": "Invitation",
+    "accepted": "Vous avez maintenant accès à {{name}}.",
+    "failed": "Cette invitation n est plus valable.",
+    "continue": "Continuer"
+  },
+  "installer": {
+    "openFaults_one": "{{count}} panne",
+    "openFaults_other": "{{count}} pannes",
+    "openFaultsHeading": "Pannes ouvertes",
+    "healthy": "Tout va bien",
+    "noFaults": "Rien ne nécessite d attention.",
+    "emptyTitle": "Aucun logement",
+    "emptyDescription": "Les logements apparaissent ici dès que quelqu un vous invite."
+  },
   "logs": {
     "title": "Journaux",
     "empty": "Cet équipement n a encore rien signalé.",
@@ -195,7 +236,8 @@
     "themeLight": "Clair",
     "themeDark": "Sombre",
     "language": "Langue",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "access": "Accès à ce logement"
   },
   "roles": {
     "consumer": "particulier",

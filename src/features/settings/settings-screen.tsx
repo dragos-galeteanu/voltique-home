@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -41,6 +42,7 @@ const LANGUAGE_NAMES: Record<LanguagePreference, string> = {
  */
 export function SettingsScreen() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { showToast } = useToast();
   const { t } = useTranslation();
   const user = useAppSelector(selectCurrentUser);
@@ -94,6 +96,15 @@ export function SettingsScreen() {
           ))}
         </View>
       </Surface>
+
+      {user?.role === 'consumer' ? (
+        <Button
+          label={t('settings.access')}
+          variant="secondary"
+          testID="settings-access"
+          onPress={() => router.push('/consumer/access')}
+        />
+      ) : null}
 
       <Button
         label={t('settings.signOut')}

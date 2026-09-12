@@ -142,6 +142,47 @@
       "connectivity": "Lost contact"
     }
   },
+  "access": {
+    "title": "Who can see this",
+    "people": "People",
+    "pending": "Pending invitations",
+    "noPending": "No invitations waiting.",
+    "inviteSomeone": "Invite someone",
+    "sendInvite": "Send invitation",
+    "invited": "Invitation sent to {{email}}",
+    "inviteFailed": "Could not send that invitation",
+    "revoke": "Revoke",
+    "revoked": "Invitation revoked",
+    "revokeFailed": "Could not revoke that invitation",
+    "expires": "Expires {{time}}",
+    "emailRequired": "Enter a valid email address",
+    "removed": "{{name}} no longer has access",
+    "removeFailed": "Could not remove that person",
+    "removeTitle": "Remove {{name}}?",
+    "removeExplanation": "They lose access immediately. Anything they added stays in the household.",
+    "residentNote": "A resident sees everything in this household and can add assets.",
+    "installerNote": "An installer sees your assets, their logs and their faults. Not your household settings.",
+    "role": {
+      "owner": "Owner",
+      "resident": "Resident",
+      "installer": "Installer"
+    }
+  },
+  "invite": {
+    "title": "Invitation",
+    "accepted": "You now have access to {{name}}.",
+    "failed": "This invitation is no longer valid.",
+    "continue": "Continue"
+  },
+  "installer": {
+    "openFaults_one": "{{count}} fault",
+    "openFaults_other": "{{count}} faults",
+    "openFaultsHeading": "Open faults",
+    "healthy": "All well",
+    "noFaults": "Nothing needs attention.",
+    "emptyTitle": "No households yet",
+    "emptyDescription": "Households appear here once someone invites you to theirs."
+  },
   "logs": {
     "title": "Device logs",
     "empty": "This asset has not reported anything yet.",
@@ -195,7 +236,8 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "language": "Language",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "access": "Who can see this household"
   },
   "roles": {
     "consumer": "consumer",

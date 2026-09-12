@@ -256,6 +256,19 @@ const injectedRtkApi = api
         }),
         providesTags: ['Alert'],
       }),
+      listAlerts: build.query<ListAlertsApiResponse, ListAlertsApiArg>({
+        query: (queryArg) => ({
+          url: `/alerts`,
+          params: {
+            status: queryArg.status,
+            severity: queryArg.severity,
+            householdId: queryArg.householdId,
+            cursor: queryArg.cursor,
+            limit: queryArg.limit,
+          },
+        }),
+        providesTags: ['Alert'],
+      }),
       getAlert: build.query<GetAlertApiResponse, GetAlertApiArg>({
         query: (queryArg) => ({ url: `/alerts/${queryArg.alertId}` }),
         providesTags: ['Alert'],
@@ -420,6 +433,15 @@ export type ListHouseholdAlertsApiArg = {
   status?: AlertStatus;
   severity?: AlertSeverity;
   assetId?: string;
+  /** Opaque cursor from the previous page's `nextCursor`. */
+  cursor?: string;
+  limit?: number;
+};
+export type ListAlertsApiResponse = /** status 200 A page of alerts */ AlertPage;
+export type ListAlertsApiArg = {
+  status?: AlertStatus;
+  severity?: AlertSeverity;
+  householdId?: string;
   /** Opaque cursor from the previous page's `nextCursor`. */
   cursor?: string;
   limit?: number;
@@ -666,6 +688,8 @@ export type Alert = {
   id: string;
   householdId: string;
   assetId: string;
+  /** Present in the cross-household view, where one name is not enough. */
+  householdName?: string;
   assetName?: string;
   /** Stable identifier for this kind of problem. */
   code: string;
@@ -730,6 +754,8 @@ export const {
   useLazyListAssetLogsQuery,
   useListHouseholdAlertsQuery,
   useLazyListHouseholdAlertsQuery,
+  useListAlertsQuery,
+  useLazyListAlertsQuery,
   useGetAlertQuery,
   useLazyGetAlertQuery,
   useUpdateAlertStatusMutation,

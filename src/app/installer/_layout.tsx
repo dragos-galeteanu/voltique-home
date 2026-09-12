@@ -1,16 +1,18 @@
-import { RoleTabs, type TabDefinition } from '@/components/role-tabs';
+import { Stack } from 'expo-router';
+
 import { RoleGate } from '@/features/auth/role-gate';
 
-const TABS: TabDefinition[] = [
-  { name: 'households', titleKey: 'tabs.households', icon: 'home-outline' },
-  { name: 'alerts', titleKey: 'tabs.alerts', icon: 'warning-outline' },
-  { name: 'settings', titleKey: 'tabs.settings', icon: 'settings-outline' },
-];
-
+/**
+ * Installer shell. Same shape as the consumer one: tabs in a group below a stack, so a
+ * household opens over the tabs rather than inside one.
+ */
 export default function InstallerLayout() {
   return (
     <RoleGate role="installer">
-      <RoleTabs tabs={TABS} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="household/[householdId]" />
+      </Stack>
     </RoleGate>
   );
 }

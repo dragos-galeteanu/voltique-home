@@ -7,7 +7,16 @@ import { formatRelativeTime } from '@/lib/format-energy';
 
 import { ALERT_SEVERITY_PRESENTATION, ALERT_STATUS_PRESENTATION } from './alert-presentation';
 
-export function AlertRow({ alert, onPress }: { alert: Alert; onPress: () => void }) {
+export function AlertRow({
+  alert,
+  subtitle,
+  onPress,
+}: {
+  alert: Alert;
+  /** Shown under the title. The installer view uses it to name the household. */
+  subtitle?: string;
+  onPress: () => void;
+}) {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -30,7 +39,7 @@ export function AlertRow({ alert, onPress }: { alert: Alert; onPress: () => void
         <View style={{ gap: 2 }}>
           <Text variant="heading">{alert.title}</Text>
           <Text variant="caption" tone="muted">
-            {alert.assetName ?? ''}
+            {[subtitle, alert.assetName].filter(Boolean).join(' · ')}
           </Text>
         </View>
 

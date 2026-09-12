@@ -5,6 +5,7 @@ import { api } from '@/api/api';
 import { registerAuthListeners } from '@/features/auth/auth-listeners';
 import { authReducer } from '@/features/auth/auth-slice';
 import { householdReducer } from '@/features/household/household-slice';
+import { inviteReducer } from '@/features/invites/invite-slice';
 import { uiReducer } from '@/features/ui/ui-slice';
 
 /**
@@ -19,6 +20,7 @@ export function createStore() {
     reducer: {
       auth: authReducer,
       household: householdReducer,
+      invite: inviteReducer,
       ui: uiReducer,
       [api.reducerPath]: api.reducer,
     },

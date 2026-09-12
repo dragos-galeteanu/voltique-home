@@ -142,6 +142,47 @@
       "connectivity": "Perdita di contatto"
     }
   },
+  "access": {
+    "title": "Chi può vedere questo",
+    "people": "Persone",
+    "pending": "Inviti in sospeso",
+    "noPending": "Nessun invito in sospeso.",
+    "inviteSomeone": "Invita qualcuno",
+    "sendInvite": "Invia invito",
+    "invited": "Invito inviato a {{email}}",
+    "inviteFailed": "Impossibile inviare l invito",
+    "revoke": "Revoca",
+    "revoked": "Invito revocato",
+    "revokeFailed": "Impossibile revocare l invito",
+    "expires": "Scade {{time}}",
+    "emailRequired": "Inserisci un indirizzo e-mail valido",
+    "removed": "{{name}} non ha più accesso",
+    "removeFailed": "Impossibile rimuovere la persona",
+    "removeTitle": "Rimuovere {{name}}?",
+    "removeExplanation": "L accesso termina subito. I dispositivi aggiunti restano nell abitazione.",
+    "residentNote": "Un residente vede tutto in questa abitazione e può aggiungere dispositivi.",
+    "installerNote": "Un installatore vede i dispositivi, i log e i guasti. Non le impostazioni dell abitazione.",
+    "role": {
+      "owner": "Proprietario",
+      "resident": "Residente",
+      "installer": "Installatore"
+    }
+  },
+  "invite": {
+    "title": "Invito",
+    "accepted": "Ora hai accesso a {{name}}.",
+    "failed": "Questo invito non è più valido.",
+    "continue": "Continua"
+  },
+  "installer": {
+    "openFaults_one": "{{count}} guasto",
+    "openFaults_other": "{{count}} guasti",
+    "openFaultsHeading": "Guasti aperti",
+    "healthy": "Tutto a posto",
+    "noFaults": "Niente richiede attenzione.",
+    "emptyTitle": "Nessuna abitazione",
+    "emptyDescription": "Le abitazioni compaiono qui quando qualcuno ti invita."
+  },
   "logs": {
     "title": "Log del dispositivo",
     "empty": "Questo dispositivo non ha ancora segnalato nulla.",
@@ -195,7 +236,8 @@
     "themeLight": "Chiaro",
     "themeDark": "Scuro",
     "language": "Lingua",
-    "signOut": "Esci"
+    "signOut": "Esci",
+    "access": "Accesso a questa abitazione"
   },
   "roles": {
     "consumer": "consumatore",

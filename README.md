@@ -169,6 +169,27 @@ produce zero, it produced an unknown amount.
 
 Only the day range keeps polling. A finished week or month cannot change.
 
+## Roles and access
+
+A household owner invites people from settings. A resident sees everything and can add
+assets; an installer gets assets, their logs and their faults, and nothing about the
+household itself. The screen says which, in those words, before you send the invitation.
+
+Invitations arrive as a link into the app, `voltique://invite/<token>`. Opened while
+signed out, the token is held and the person is sent to sign in, and the entry route
+brings them back to it afterwards, so a link is never lost. Universal and app links are
+not configured yet: that needs the domain association files, which belong with the real
+domain.
+
+The installer shell is a different set of tabs behind the same sign-in. It lists the
+households that invited them, each household's assets and open faults, and a
+cross-household fault list, which is why the contract has a top-level alert collection
+alongside the per-household inbox. Device logs live at a shared route reachable by both
+roles, because duplicating that screen per role would be the thing that drifts.
+
+What an installer may actually see is the server's decision, not the app's. The app hides
+what it knows is irrelevant; it does not pretend to enforce anything.
+
 ## Alerts and logs
 
 Three ideas, kept apart deliberately. Telemetry is measurement, logs are what the device

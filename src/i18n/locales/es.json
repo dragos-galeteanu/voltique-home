@@ -142,6 +142,47 @@
       "connectivity": "Pérdida de contacto"
     }
   },
+  "access": {
+    "title": "Quién puede ver esto",
+    "people": "Personas",
+    "pending": "Invitaciones pendientes",
+    "noPending": "No hay invitaciones pendientes.",
+    "inviteSomeone": "Invitar a alguien",
+    "sendInvite": "Enviar invitación",
+    "invited": "Invitación enviada a {{email}}",
+    "inviteFailed": "No se ha podido enviar la invitación",
+    "revoke": "Revocar",
+    "revoked": "Invitación revocada",
+    "revokeFailed": "No se ha podido revocar la invitación",
+    "expires": "Caduca {{time}}",
+    "emailRequired": "Introduce un correo electrónico válido",
+    "removed": "{{name}} ya no tiene acceso",
+    "removeFailed": "No se ha podido quitar a esa persona",
+    "removeTitle": "¿Quitar a {{name}}?",
+    "removeExplanation": "Pierde el acceso de inmediato. Lo que haya añadido sigue en el hogar.",
+    "residentNote": "Un residente ve todo en este hogar y puede añadir dispositivos.",
+    "installerNote": "Un instalador ve tus dispositivos, sus registros y sus fallos. No los ajustes del hogar.",
+    "role": {
+      "owner": "Propietario",
+      "resident": "Residente",
+      "installer": "Instalador"
+    }
+  },
+  "invite": {
+    "title": "Invitación",
+    "accepted": "Ya tienes acceso a {{name}}.",
+    "failed": "Esta invitación ya no es válida.",
+    "continue": "Continuar"
+  },
+  "installer": {
+    "openFaults_one": "{{count}} fallo",
+    "openFaults_other": "{{count}} fallos",
+    "openFaultsHeading": "Fallos abiertos",
+    "healthy": "Todo bien",
+    "noFaults": "No hay nada que atender.",
+    "emptyTitle": "Todavía no hay hogares",
+    "emptyDescription": "Los hogares aparecen aquí cuando alguien te invita al suyo."
+  },
   "logs": {
     "title": "Registros",
     "empty": "Este dispositivo todavía no ha informado nada.",
@@ -195,7 +236,8 @@
     "themeLight": "Claro",
     "themeDark": "Oscuro",
     "language": "Idioma",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "access": "Acceso a este hogar"
   },
   "roles": {
     "consumer": "consumidor",
