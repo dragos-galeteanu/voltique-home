@@ -1,0 +1,1592 @@
+openapi: 3.1.0
+info:
+  title: Voltique API
+  version: 1.0.0
+  description: |
+    Household energy management. Consumers own households and the energy assets in
+    them; installers get scoped access to households that invited them.
+
+    Conventions:
+      * JSON bodies are camelCase, so no transform layer sits between API and store.
+      * Timestamps are ISO 8601 with an offset, and the app formats to local time.
+      * Power is watts, energy is watt-hours, and every value carries its unit.
+      * Collections paginate by cursor. Telemetry is the exception: it is bounded by a
+        time range and returns whole series.
+      * Errors are RFC 9457 problem details with a stable machine-readable `code`.
+servers:
+  - url: https://api.voltique.example/api/v1
+    description: Production
+  - url: https://staging.api.voltique.example/api/v1
+    description: Staging
+  - url: http://localhost:4010/api/v1
+    description: Local Prism mock
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+    description: Sessions and tokens.
+  - name: CurrentUser
+    description: The signed-in user.
+  - name: Household
+    description: Households and their membership.
+  - name: Member
+    description: People with access to a household.
+  - name: Invite
+    description: Invitations, including installer access.
+  - name: AssetCatalogue
+    description: Asset types, manufacturers and models available to add.
+  - name: Asset
+    description: Energy assets installed in a household.
+  - name: Telemetry
+    description: Measured time series.
+  - name: Log
+    description: Raw device events.
+  - name: Alert
+    description: Server-derived problems with a lifecycle.
+paths:
+  /auth/sessions:
+    post:
+      operationId: signIn
+      summary: Exchange credentials for a session
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /auth/sessions/refresh:
+    post:
+      operationId: refreshSession
+      summary: Exchange a refresh token for a new token pair
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: New token pair
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/sessions/current:
+    delete:
+      operationId: signOut
+      summary: Revoke the current session
+      tags: [Auth]
+      responses:
+        '204':
+          description: Session revoked
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      summary: Read the signed-in user
+      tags: [CurrentUser]
+      responses:
+        '200':
+          description: The signed-in user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /households:
+    get:
+      operationId: listHouseholds
+      summary: List households the caller can access
+      description: |
+        Consumers see the households they belong to. Installers see the households that
+        invited them, with the fields their scope allows.
+      tags: [Household]
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of households
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HouseholdPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createHousehold
+      summary: Create a household
+      tags: [Household]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseholdCreate'
+      responses:
+        '201':
+          description: Household created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /households/{householdId}:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: getHousehold
+      summary: Read a household
+      tags: [Household]
+      responses:
+        '200':
+          description: The household
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateHousehold
+      summary: Update a household
+      tags: [Household]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HouseholdUpdate'
+      responses:
+        '200':
+          description: The updated household
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      operationId: deleteHousehold
+      summary: Delete a household and everything in it
+      tags: [Household]
+      responses:
+        '204':
+          description: Deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /households/{householdId}/members:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: listHouseholdMembers
+      summary: List the people with access to a household
+      tags: [Member]
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberPage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /households/{householdId}/members/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    delete:
+      operationId: removeHouseholdMember
+      summary: Revoke a person's access to a household
+      tags: [Member]
+      responses:
+        '204':
+          description: Access revoked
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /households/{householdId}/invites:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: listHouseholdInvites
+      summary: List invites for a household
+      tags: [Invite]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/InviteStatus'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of invites
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitePage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      operationId: createHouseholdInvite
+      summary: Invite someone to a household
+      description: |
+        Used both for another resident and for an installer. The membership role in the
+        request decides what the invitee will be able to see.
+      tags: [Invite]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteCreate'
+      responses:
+        '201':
+          description: Invite created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /invites/{inviteId}:
+    parameters:
+      - name: inviteId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    delete:
+      operationId: revokeInvite
+      summary: Revoke a pending invite
+      tags: [Invite]
+      responses:
+        '204':
+          description: Invite revoked
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /invites/{token}/accept:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        description: Opaque token from the invitation link.
+        schema:
+          type: string
+    post:
+      operationId: acceptInvite
+      summary: Accept an invitation
+      tags: [Invite]
+      responses:
+        '200':
+          description: The household the caller now has access to
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Household'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /asset-types:
+    get:
+      operationId: listAssetTypes
+      summary: List the kinds of asset that can be added
+      tags: [AssetCatalogue]
+      responses:
+        '200':
+          description: Asset types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetType'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /manufacturers:
+    get:
+      operationId: listManufacturers
+      summary: List manufacturers, optionally for one asset type
+      tags: [AssetCatalogue]
+      parameters:
+        - name: assetTypeId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Manufacturers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Manufacturer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /manufacturers/{manufacturerId}/models:
+    parameters:
+      - name: manufacturerId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: listManufacturerModels
+      summary: List a manufacturer's models
+      description: |
+        Each model declares the parameters the platform needs to reach the device
+        through the manufacturer's integration. The app renders the connect form from
+        this, so adding a manufacturer never needs an app release.
+      tags: [AssetCatalogue]
+      responses:
+        '200':
+          description: Models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetModel'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /households/{householdId}/assets:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: listHouseholdAssets
+      summary: List the assets in a household
+      tags: [Asset]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/AssetStatus'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of assets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetPage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createHouseholdAsset
+      summary: Add an asset to a household
+      description: |
+        Credentials are passed to the manufacturer integration and are never returned by
+        any endpoint. The asset starts in `commissioning` until the first successful
+        read from the device.
+      tags: [Asset]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetCreate'
+      responses:
+        '201':
+          description: Asset added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '502':
+          $ref: '#/components/responses/UpstreamFailure'
+  /assets/{assetId}:
+    parameters:
+      - $ref: '#/components/parameters/AssetId'
+    get:
+      operationId: getAsset
+      summary: Read an asset
+      tags: [Asset]
+      responses:
+        '200':
+          description: The asset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateAsset
+      summary: Rename an asset or re-supply its credentials
+      tags: [Asset]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetUpdate'
+      responses:
+        '200':
+          description: The updated asset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      operationId: deleteAsset
+      summary: Remove an asset from its household
+      tags: [Asset]
+      responses:
+        '204':
+          description: Removed
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /assets/{assetId}/telemetry:
+    parameters:
+      - $ref: '#/components/parameters/AssetId'
+    get:
+      operationId: getAssetTelemetry
+      summary: Read measured series for one asset
+      tags: [Telemetry]
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: Start of the window, inclusive.
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          description: End of the window, exclusive.
+          schema:
+            type: string
+            format: date-time
+        - $ref: '#/components/parameters/Resolution'
+        - name: metrics
+          in: query
+          description: Metrics to return. Defaults to every metric the asset reports.
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AssetMetric'
+      responses:
+        '200':
+          description: Series for the requested window
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /households/{householdId}/telemetry:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: getHouseholdTelemetry
+      summary: Read aggregated series for a whole household
+      description: |
+        Server-side aggregation across assets. This is what the dashboard charts, so the
+        app never sums per-asset series itself.
+      tags: [Telemetry]
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: Start of the window, inclusive.
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          description: End of the window, exclusive.
+          schema:
+            type: string
+            format: date-time
+        - $ref: '#/components/parameters/Resolution'
+        - name: metrics
+          in: query
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/HouseholdMetric'
+      responses:
+        '200':
+          description: Series for the requested window
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TelemetryResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /assets/{assetId}/logs:
+    parameters:
+      - $ref: '#/components/parameters/AssetId'
+    get:
+      operationId: listAssetLogs
+      summary: Read the raw event stream reported by an asset
+      description: |
+        What the device or the manufacturer's cloud said, newest first and unmodified.
+        Diagnostics material, mainly for installers.
+      tags: [Log]
+      parameters:
+        - name: severity
+          in: query
+          description: Minimum severity to return.
+          schema:
+            $ref: '#/components/schemas/LogSeverity'
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of log entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogEntryPage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /households/{householdId}/alerts:
+    parameters:
+      - $ref: '#/components/parameters/HouseholdId'
+    get:
+      operationId: listHouseholdAlerts
+      summary: List problems the platform derived for a household
+      description: |
+        Alerts are derived server-side from device logs, telemetry thresholds and
+        connectivity, then deduplicated into one stateful record per problem. The app
+        reads and acknowledges them; it never decides what counts as a fault.
+      tags: [Alert]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/AlertStatus'
+        - name: severity
+          in: query
+          schema:
+            $ref: '#/components/schemas/AlertSeverity'
+        - name: assetId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of alerts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertPage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /alerts/{alertId}:
+    parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: getAlert
+      summary: Read one alert
+      tags: [Alert]
+      responses:
+        '200':
+          description: The alert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateAlertStatus
+      summary: Acknowledge or resolve an alert
+      description: |
+        The only writable part of an alert. A resolved alert reopens on its own if the
+        underlying condition recurs, which is why the client cannot delete one.
+      tags: [Alert]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertStatusUpdate'
+      responses:
+        '200':
+          description: The updated alert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    HouseholdId:
+      name: householdId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AssetId:
+      name: assetId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Cursor:
+      name: cursor
+      in: query
+      description: Opaque cursor from the previous page's `nextCursor`.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 50
+    From:
+      name: from
+      in: query
+      description: Start of the window, inclusive. Optional when browsing logs.
+      schema:
+        type: string
+        format: date-time
+    To:
+      name: to
+      in: query
+      description: End of the window, exclusive. Optional when browsing logs.
+      schema:
+        type: string
+        format: date-time
+    Resolution:
+      name: resolution
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/Resolution'
+  responses:
+    Unauthorized:
+      description: Missing, expired or invalid credentials
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Not authenticated
+            status: 401
+            code: token_invalid
+            detail: The access token is missing or has expired.
+    Forbidden:
+      description: Authenticated, but not permitted for this resource
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Not permitted
+            status: 403
+            code: household_access_denied
+            detail: Your membership of this household does not allow this.
+    NotFound:
+      description: No such resource, or not visible to the caller
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Not found
+            status: 404
+            code: resource_not_found
+    Conflict:
+      description: The request conflicts with the current state
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Already invited
+            status: 409
+            code: invite_already_pending
+            detail: That address already has a pending invite for this household.
+    UnprocessableEntity:
+      description: Well formed, but the values are not acceptable
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Credentials rejected by the manufacturer
+            status: 422
+            code: asset_credentials_rejected
+            detail: The serial number and PIN combination was not accepted.
+    TooManyRequests:
+      description: Rate limited
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Too many attempts
+            status: 429
+            code: rate_limited
+            detail: Try again in a minute.
+    UpstreamFailure:
+      description: The manufacturer integration could not be reached
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            title: Manufacturer unreachable
+            status: 502
+            code: upstream_unavailable
+            detail: The manufacturer's cloud did not respond. The asset was not added.
+  schemas:
+    ProblemDetails:
+      type: object
+      description: RFC 9457 problem details.
+      required: [title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        code:
+          type: string
+          description: |
+            Stable machine-readable identifier. The app maps this to user-facing copy and
+            to retry behaviour, so it must not change once published.
+          examples: [asset_credentials_rejected, household_limit_reached]
+        instance:
+          type: string
+    PageMeta:
+      type: object
+      required: [nextCursor]
+      properties:
+        nextCursor:
+          type: [string, 'null']
+          description: Cursor for the next page, or null on the last page.
+          # Keeps the mock from handing out a fake cursor that never ends.
+          examples: [null]
+    UserRole:
+      type: string
+      enum: [consumer, installer]
+    MembershipRole:
+      type: string
+      description: |
+        What someone can do inside one household. Installers see assets, logs and alerts
+        but not billing or membership.
+      enum: [owner, resident, installer]
+    User:
+      type: object
+      required: [id, email, displayName, role, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+        createdAt:
+          type: string
+          format: date-time
+      examples:
+        - id: 6f1e2d3c-4b5a-4c7d-8e9f-0a1b2c3d4e5f
+          email: ada@example.com
+          displayName: Ada
+          role: consumer
+          createdAt: '2026-01-14T09:12:00Z'
+    AuthTokens:
+      type: object
+      required: [accessToken, refreshToken, expiresIn]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+          description: Lifetime of the access token in seconds.
+      examples:
+        - accessToken: stub.access.token
+          refreshToken: stub.refresh.token
+          expiresIn: 900
+    Session:
+      type: object
+      required: [user, tokens]
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        tokens:
+          $ref: '#/components/schemas/AuthTokens'
+    SignInRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+    Address:
+      type: object
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        countryCode:
+          type: string
+          minLength: 2
+          maxLength: 2
+    Household:
+      type: object
+      required: [id, name, timezone, membershipRole, assetCount, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        timezone:
+          type: string
+          description: IANA zone, used for daily and monthly aggregation boundaries.
+          examples: [Europe/Bucharest]
+        address:
+          $ref: '#/components/schemas/Address'
+        membershipRole:
+          $ref: '#/components/schemas/MembershipRole'
+        assetCount:
+          type: integer
+        openAlertCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      examples:
+        - id: 11111111-1111-4111-8111-111111111111
+          name: Maple Street
+          timezone: Europe/Bucharest
+          membershipRole: owner
+          assetCount: 4
+          openAlertCount: 1
+          createdAt: '2026-02-02T10:00:00Z'
+    HouseholdCreate:
+      type: object
+      required: [name, timezone]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        timezone:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+    HouseholdUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        timezone:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+    HouseholdPage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Household'
+    Member:
+      type: object
+      required: [userId, displayName, email, membershipRole, joinedAt]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        displayName:
+          type: string
+        email:
+          type: string
+          format: email
+        membershipRole:
+          $ref: '#/components/schemas/MembershipRole'
+        joinedAt:
+          type: string
+          format: date-time
+    MemberPage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Member'
+    InviteStatus:
+      type: string
+      enum: [pending, accepted, revoked, expired]
+    Invite:
+      type: object
+      required: [id, householdId, email, membershipRole, status, createdAt, expiresAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        householdId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        membershipRole:
+          $ref: '#/components/schemas/MembershipRole'
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        invitedByUserId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+    InviteCreate:
+      type: object
+      required: [email, membershipRole]
+      properties:
+        email:
+          type: string
+          format: email
+        membershipRole:
+          $ref: '#/components/schemas/MembershipRole'
+        message:
+          type: string
+          maxLength: 280
+    InvitePage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Invite'
+    AssetCategory:
+      type: string
+      description: How an asset participates in the household's energy balance.
+      enum: [production, consumption, storage, bidirectional]
+    AssetMetric:
+      type: string
+      enum: [power, energy, stateOfCharge, temperature]
+    HouseholdMetric:
+      type: string
+      enum:
+        - production
+        - consumption
+        - gridImport
+        - gridExport
+        - batteryCharge
+        - batteryDischarge
+    Resolution:
+      type: string
+      description: Bucket size for aggregation. The server downsamples, never the app.
+      enum: [minute, quarterHour, hour, day, month]
+    Unit:
+      type: string
+      enum: [W, Wh, percent, celsius]
+    AssetType:
+      type: object
+      required: [id, name, category, metrics]
+      properties:
+        id:
+          type: string
+          examples: [ev_charger, solar_inverter, heat_pump, battery, washing_machine]
+        name:
+          type: string
+        category:
+          $ref: '#/components/schemas/AssetCategory'
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetMetric'
+      examples:
+        - id: solar_inverter
+          name: Solar inverter
+          category: production
+          metrics: [power, energy]
+    Manufacturer:
+      type: object
+      required: [id, name, assetTypeIds]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        assetTypeIds:
+          type: array
+          items:
+            type: string
+        logoUrl:
+          type: string
+          format: uri
+      examples:
+        - id: sunra
+          name: Sunra
+          assetTypeIds: [solar_inverter, battery]
+    ConnectionParameterType:
+      type: string
+      enum: [text, password, number, select]
+    ConnectionParameter:
+      type: object
+      description: |
+        One field the connect form must collect. Rendering the form from this is what
+        lets a new manufacturer ship without an app release.
+      required: [key, label, type, required]
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/ConnectionParameterType'
+        required:
+          type: boolean
+        helpText:
+          type: string
+        pattern:
+          type: string
+          description: Regular expression the value must match.
+        options:
+          type: array
+          description: Present when type is `select`.
+          items:
+            type: object
+            required: [value, label]
+            properties:
+              value:
+                type: string
+              label:
+                type: string
+    AssetModel:
+      type: object
+      required: [id, manufacturerId, assetTypeId, name, connectionParameters]
+      properties:
+        id:
+          type: string
+        manufacturerId:
+          type: string
+        assetTypeId:
+          type: string
+        name:
+          type: string
+        ratedPowerW:
+          type: number
+        capacityWh:
+          type: number
+        connectionParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionParameter'
+      examples:
+        - id: sunra-x7
+          manufacturerId: sunra
+          assetTypeId: solar_inverter
+          name: Sunra X7
+          ratedPowerW: 7000
+          connectionParameters:
+            - key: serialNumber
+              label: Serial number
+              type: text
+              required: true
+              helpText: Printed on the label beside the DC isolator.
+            - key: cloudPin
+              label: Installer PIN
+              type: password
+              required: true
+    AssetStatus:
+      type: string
+      description: |
+        `commissioning` until the first successful read. `faulted` means an open alert of
+        critical severity, so status and alerts never disagree.
+      enum: [commissioning, online, offline, faulted, unknown]
+    AssetReading:
+      type: object
+      description: Latest known values, for list rows and tiles without a series call.
+      properties:
+        powerW:
+          type: number
+        energyTodayWh:
+          type: number
+        stateOfChargePercent:
+          type: number
+          minimum: 0
+          maximum: 100
+        measuredAt:
+          type: string
+          format: date-time
+    Asset:
+      type: object
+      required:
+        - id
+        - householdId
+        - name
+        - assetTypeId
+        - manufacturerId
+        - modelId
+        - category
+        - status
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        householdId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        assetTypeId:
+          type: string
+        manufacturerId:
+          type: string
+        modelId:
+          type: string
+        category:
+          $ref: '#/components/schemas/AssetCategory'
+        status:
+          $ref: '#/components/schemas/AssetStatus'
+        serialNumber:
+          type: string
+        ratedPowerW:
+          type: number
+        capacityWh:
+          type: number
+        lastSeenAt:
+          type: string
+          format: date-time
+        latestReading:
+          $ref: '#/components/schemas/AssetReading'
+        openAlertCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      examples:
+        - id: 22222222-2222-4222-8222-222222222222
+          householdId: 11111111-1111-4111-8111-111111111111
+          name: Roof array
+          assetTypeId: solar_inverter
+          manufacturerId: sunra
+          modelId: sunra-x7
+          category: production
+          status: online
+          ratedPowerW: 7000
+          lastSeenAt: '2026-09-12T08:55:00Z'
+          latestReading:
+            powerW: 4210
+            energyTodayWh: 18400
+            measuredAt: '2026-09-12T08:55:00Z'
+          openAlertCount: 0
+          createdAt: '2026-02-02T11:30:00Z'
+    AssetCreate:
+      type: object
+      required: [name, assetTypeId, manufacturerId, modelId, credentials]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        assetTypeId:
+          type: string
+        manufacturerId:
+          type: string
+        modelId:
+          type: string
+        credentials:
+          type: object
+          description: |
+            Keyed by the model's connection parameter keys. Write only: no endpoint ever
+            returns these values back.
+          additionalProperties:
+            type: string
+    AssetUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        credentials:
+          type: object
+          additionalProperties:
+            type: string
+    AssetPage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Asset'
+    TelemetryPoint:
+      type: object
+      required: [t, value]
+      properties:
+        t:
+          type: string
+          format: date-time
+          description: Start of the bucket.
+        value:
+          type: [number, 'null']
+          description: Null marks a gap, which charts must render as a break, not a zero.
+    TelemetrySeries:
+      type: object
+      required: [metric, unit, points]
+      properties:
+        metric:
+          type: string
+        unit:
+          $ref: '#/components/schemas/Unit'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelemetryPoint'
+    TelemetryResponse:
+      type: object
+      required: [from, to, resolution, series]
+      properties:
+        assetId:
+          type: string
+          format: uuid
+        householdId:
+          type: string
+          format: uuid
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        resolution:
+          $ref: '#/components/schemas/Resolution'
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TelemetrySeries'
+      examples:
+        - householdId: 11111111-1111-4111-8111-111111111111
+          from: '2026-09-12T00:00:00Z'
+          to: '2026-09-12T04:00:00Z'
+          resolution: hour
+          series:
+            - metric: production
+              unit: W
+              points:
+                - { t: '2026-09-12T00:00:00Z', value: 0 }
+                - { t: '2026-09-12T01:00:00Z', value: 0 }
+                - { t: '2026-09-12T02:00:00Z', value: 130 }
+                - { t: '2026-09-12T03:00:00Z', value: 890 }
+            - metric: consumption
+              unit: W
+              points:
+                - { t: '2026-09-12T00:00:00Z', value: 410 }
+                - { t: '2026-09-12T01:00:00Z', value: 380 }
+                - { t: '2026-09-12T02:00:00Z', value: 395 }
+                - { t: '2026-09-12T03:00:00Z', value: 1240 }
+    LogSeverity:
+      type: string
+      enum: [debug, info, warning, error, critical]
+    LogSource:
+      type: string
+      enum: [device, manufacturerCloud, platform]
+    LogEntry:
+      type: object
+      required: [id, assetId, ts, severity, source, message]
+      properties:
+        id:
+          type: string
+        assetId:
+          type: string
+          format: uuid
+        ts:
+          type: string
+          format: date-time
+        severity:
+          $ref: '#/components/schemas/LogSeverity'
+        source:
+          $ref: '#/components/schemas/LogSource'
+        code:
+          type: string
+          description: Manufacturer fault code, as reported.
+        message:
+          type: string
+        raw:
+          type: object
+          additionalProperties: true
+          description: Untouched payload, shown to installers for diagnosis.
+      examples:
+        - id: log_01J8
+          assetId: 22222222-2222-4222-8222-222222222222
+          ts: '2026-09-12T07:41:12Z'
+          severity: error
+          source: device
+          code: F013
+          message: Grid voltage out of range, inverter stopped exporting.
+    LogEntryPage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/LogEntry'
+    AlertStatus:
+      type: string
+      enum: [open, acknowledged, resolved]
+    AlertSeverity:
+      type: string
+      enum: [warning, critical]
+    AlertSource:
+      type: string
+      description: What the platform derived this alert from.
+      enum: [deviceLog, telemetryThreshold, connectivity]
+    Alert:
+      type: object
+      required:
+        - id
+        - householdId
+        - assetId
+        - code
+        - severity
+        - status
+        - title
+        - derivedFrom
+        - firstSeenAt
+        - lastSeenAt
+        - occurrences
+      properties:
+        id:
+          type: string
+          format: uuid
+        householdId:
+          type: string
+          format: uuid
+        assetId:
+          type: string
+          format: uuid
+        assetName:
+          type: string
+        code:
+          type: string
+          description: Stable identifier for this kind of problem.
+        severity:
+          $ref: '#/components/schemas/AlertSeverity'
+        status:
+          $ref: '#/components/schemas/AlertStatus'
+        title:
+          type: string
+        detail:
+          type: string
+        derivedFrom:
+          $ref: '#/components/schemas/AlertSource'
+        firstSeenAt:
+          type: string
+          format: date-time
+        lastSeenAt:
+          type: string
+          format: date-time
+        occurrences:
+          type: integer
+          description: How many underlying events collapsed into this alert.
+        acknowledgedAt:
+          type: string
+          format: date-time
+        acknowledgedByUserId:
+          type: string
+          format: uuid
+        resolvedAt:
+          type: string
+          format: date-time
+      examples:
+        - id: 33333333-3333-4333-8333-333333333333
+          householdId: 11111111-1111-4111-8111-111111111111
+          assetId: 22222222-2222-4222-8222-222222222222
+          assetName: Roof array
+          code: inverter_grid_voltage
+          severity: critical
+          status: open
+          title: Inverter stopped exporting
+          detail: Grid voltage has been out of range since 07:41.
+          derivedFrom: deviceLog
+          firstSeenAt: '2026-09-12T07:41:12Z'
+          lastSeenAt: '2026-09-12T08:55:00Z'
+          occurrences: 47
+    AlertStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [acknowledged, resolved]
+    AlertPage:
+      type: object
+      required: [data, nextCursor]
+      allOf:
+        - $ref: '#/components/schemas/PageMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Alert'

@@ -80,6 +80,40 @@ src/components/      shared components that are not design primitives
 assets/              icons and splash
 ```
 
+## API contract
+
+[`src/contract/openapi.yaml`](src/contract/openapi.yaml) is the source of truth. It
+describes every resource under `/api/v1`, the problem-details error bodies, cursor
+pagination and the units carried by every measurement.
+
+Two things are generated from it and nothing else in the app is allowed to restate them:
+
+```bash
+npm run codegen
+```
+
+That writes `src/api/generated/endpoints.ts`, a typed RTK Query endpoint per operation
+plus its hooks. The output is committed, so a fresh checkout builds without running
+codegen and a contract change arrives as a reviewable diff. The tag names in the contract
+match the `tagTypes` on the API slice, which is what lets cache invalidation be derived
+rather than hand-written. Generated code is excluded from ESLint but still formatted.
+
+The same document is the mock:
+
+```bash
+npm run mock:start
+```
+
+Prism serves the contract on `http://localhost:4010/api/v1`, returning the examples
+written into the spec, enforcing bearer auth, and rejecting requests that violate the
+schema. The mock therefore cannot drift from what the app is generated against. Prism
+itself serves the contract's paths at the root with no knowledge of the version prefix,
+so a small nginx container in front puts `/api/v1` back; the app talks to the mock with
+exactly the URLs it sends to production.
+
+Since the spec's examples are what the mock returns, they double as the fixtures for
+end-to-end runs. Keep them realistic.
+
 ## Architecture
 
 **State.** One Redux store. Client state lives in slices under `src/features`; server

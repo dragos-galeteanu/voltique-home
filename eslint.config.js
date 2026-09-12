@@ -7,7 +7,16 @@ module.exports = defineConfig([
   expoConfig,
   prettierConfig,
   {
-    ignores: ['node_modules/**', 'ios/**', 'android/**', '.expo/**', 'dist/**', 'coverage/**'],
+    ignores: [
+      'node_modules/**',
+      'ios/**',
+      'android/**',
+      '.expo/**',
+      'dist/**',
+      'coverage/**',
+      // Generated from the OpenAPI contract by `npm run codegen`; Prettier still formats it.
+      'src/api/generated/**',
+    ],
   },
   {
     plugins: { 'simple-import-sort': simpleImportSort },

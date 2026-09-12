@@ -1,0 +1,9 @@
+# Lint configuration for the API contract.
+# The two disabled rules are deliberate: the contract is internal, and the local Prism
+# mock is a real server entry the app points at during development and e2e runs.
+apis:
+  voltique:
+    root: src/contract/openapi.yaml
+rules:
+  info-license: off
+  no-server-example.com: off
