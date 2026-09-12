@@ -105,6 +105,62 @@
     "recentEvents": "Recent events",
     "noEvents": "Nothing reported yet."
   },
+  "alerts": {
+    "title": "Alerts",
+    "inbox": "Open faults",
+    "filterAll": "All",
+    "filterOpen": "Open",
+    "filterAcknowledged": "Acknowledged",
+    "filterResolved": "Resolved",
+    "emptyTitle": "Nothing wrong",
+    "emptyDescription": "No faults have been raised for this household.",
+    "emptyFiltered": "No alerts match this filter.",
+    "acknowledge": "Acknowledge",
+    "resolve": "Resolve",
+    "acknowledged": "Acknowledged",
+    "resolved": "Resolved",
+    "actionFailed": "Could not update that alert",
+    "occurrences_one": "{{count}} occurrence",
+    "occurrences_other": "{{count}} occurrences",
+    "firstSeen": "First seen {{time}}",
+    "lastSeen": "Last seen {{time}}",
+    "derivedFrom": "Detected by",
+    "evidence": "What the device reported",
+    "viewLogs": "See all device logs",
+    "severity": {
+      "critical": "Critical",
+      "warning": "Warning"
+    },
+    "status": {
+      "open": "Open",
+      "acknowledged": "Acknowledged",
+      "resolved": "Resolved"
+    },
+    "source": {
+      "deviceLog": "Device log",
+      "telemetryThreshold": "Measurement threshold",
+      "connectivity": "Lost contact"
+    }
+  },
+  "logs": {
+    "title": "Device logs",
+    "empty": "This asset has not reported anything yet.",
+    "loadMore": "Load more",
+    "filterAll": "All",
+    "minSeverity": "Minimum severity",
+    "source": {
+      "device": "Device",
+      "manufacturerCloud": "Manufacturer",
+      "platform": "Platform"
+    },
+    "severity": {
+      "debug": "Debug",
+      "info": "Info",
+      "warning": "Warning",
+      "error": "Error",
+      "critical": "Critical"
+    }
+  },
   "addAsset": {
     "title": "Add asset",
     "toHousehold": "to {{name}}",

@@ -105,6 +105,62 @@
     "recentEvents": "Letzte Ereignisse",
     "noEvents": "Noch nichts gemeldet."
   },
+  "alerts": {
+    "title": "Warnungen",
+    "inbox": "Offene Störungen",
+    "filterAll": "Alle",
+    "filterOpen": "Offen",
+    "filterAcknowledged": "Bestätigt",
+    "filterResolved": "Behoben",
+    "emptyTitle": "Alles in Ordnung",
+    "emptyDescription": "Für diesen Haushalt liegen keine Störungen vor.",
+    "emptyFiltered": "Keine Warnungen für diesen Filter.",
+    "acknowledge": "Bestätigen",
+    "resolve": "Beheben",
+    "acknowledged": "Bestätigt",
+    "resolved": "Behoben",
+    "actionFailed": "Warnung konnte nicht aktualisiert werden",
+    "occurrences_one": "{{count}} Vorfall",
+    "occurrences_other": "{{count}} Vorfälle",
+    "firstSeen": "Zuerst {{time}}",
+    "lastSeen": "Zuletzt {{time}}",
+    "derivedFrom": "Erkannt durch",
+    "evidence": "Meldung des Geräts",
+    "viewLogs": "Alle Geräteprotokolle ansehen",
+    "severity": {
+      "critical": "Kritisch",
+      "warning": "Warnung"
+    },
+    "status": {
+      "open": "Offen",
+      "acknowledged": "Bestätigt",
+      "resolved": "Behoben"
+    },
+    "source": {
+      "deviceLog": "Geräteprotokoll",
+      "telemetryThreshold": "Messschwelle",
+      "connectivity": "Verbindungsverlust"
+    }
+  },
+  "logs": {
+    "title": "Geräteprotokolle",
+    "empty": "Dieses Gerät hat noch nichts gemeldet.",
+    "loadMore": "Mehr laden",
+    "filterAll": "Alle",
+    "minSeverity": "Mindestschwere",
+    "source": {
+      "device": "Gerät",
+      "manufacturerCloud": "Hersteller",
+      "platform": "Plattform"
+    },
+    "severity": {
+      "debug": "Debug",
+      "info": "Info",
+      "warning": "Warnung",
+      "error": "Fehler",
+      "critical": "Kritisch"
+    }
+  },
   "addAsset": {
     "title": "Gerät hinzufügen",
     "toHousehold": "zu {{name}}",

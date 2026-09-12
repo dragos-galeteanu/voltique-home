@@ -895,6 +895,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LogEntryPage'
+              example:
+                nextCursor: null
+                data:
+                  - id: log_01J8
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    ts: '2026-09-12T08:55:00Z'
+                    severity: error
+                    source: device
+                    code: F013
+                    message: Grid voltage out of range, inverter stopped exporting.
+                    raw:
+                      phase: L2
+                      measuredVolts: 253.4
+                  - id: log_01J7
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    ts: '2026-09-12T08:41:00Z'
+                    severity: warning
+                    source: device
+                    code: W004
+                    message: Grid voltage approaching upper limit.
+                  - id: log_01J6
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    ts: '2026-09-12T06:12:00Z'
+                    severity: info
+                    source: manufacturerCloud
+                    message: Firmware 4.12.1 applied successfully.
+                  - id: log_01J5
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    ts: '2026-09-12T05:58:00Z'
+                    severity: info
+                    source: device
+                    message: Export started, tracking maximum power point.
+                  - id: log_01J4
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    ts: '2026-09-11T21:03:00Z'
+                    severity: debug
+                    source: platform
+                    message: Poll cycle completed in 812 ms.
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
@@ -933,6 +971,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AlertPage'
+              example:
+                nextCursor: null
+                data:
+                  - id: 33333333-3333-4333-8333-333333333333
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    assetId: 22222222-2222-4222-8222-222222222222
+                    assetName: Roof array
+                    code: inverter_grid_voltage
+                    severity: critical
+                    status: open
+                    title: Inverter stopped exporting
+                    detail: Grid voltage has been out of range since 07:41.
+                    derivedFrom: deviceLog
+                    firstSeenAt: '2026-09-12T07:41:12Z'
+                    lastSeenAt: '2026-09-12T08:55:00Z'
+                    occurrences: 47
+                  - id: 66666666-6666-4666-8666-666666666666
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    assetId: 55555555-5555-4555-8555-555555555555
+                    assetName: Cellar battery
+                    code: battery_cell_imbalance
+                    severity: warning
+                    status: acknowledged
+                    title: Cell imbalance detected
+                    detail: One module is charging more slowly than the rest.
+                    derivedFrom: telemetryThreshold
+                    firstSeenAt: '2026-09-10T18:20:00Z'
+                    lastSeenAt: '2026-09-12T06:10:00Z'
+                    occurrences: 9
+                    acknowledgedAt: '2026-09-11T09:02:00Z'
+                    acknowledgedByUserId: 6f1e2d3c-4b5a-4c7d-8e9f-0a1b2c3d4e5f
+                  - id: 77777777-7777-4777-8777-777777777777
+                    householdId: 11111111-1111-4111-8111-111111111111
+                    assetId: 44444444-4444-4444-8444-444444444444
+                    assetName: Garage charger
+                    code: charger_unreachable
+                    severity: warning
+                    status: resolved
+                    title: Charger was unreachable
+                    detail: No contact with the manufacturer cloud for six hours.
+                    derivedFrom: connectivity
+                    firstSeenAt: '2026-09-11T13:00:00Z'
+                    lastSeenAt: '2026-09-11T19:02:00Z'
+                    occurrences: 1
+                    resolvedAt: '2026-09-11T19:30:00Z'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':

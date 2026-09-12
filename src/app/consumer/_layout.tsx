@@ -11,7 +11,9 @@ export default function ConsumerLayout() {
     <RoleGate role="consumer">
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="asset/[assetId]" />
+        <Stack.Screen name="asset/[assetId]/index" />
+        <Stack.Screen name="asset/[assetId]/logs" />
+        <Stack.Screen name="alert/[alertId]" />
         <Stack.Screen name="add-asset" options={{ presentation: 'modal' }} />
         <Stack.Screen name="new-household" options={{ presentation: 'modal' }} />
       </Stack>

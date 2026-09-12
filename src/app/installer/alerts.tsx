@@ -9,7 +9,7 @@ export default function InstallerAlertsScreen() {
     <PlaceholderScreen
       title={t('placeholder.installerAlertsTitle')}
       description={t('placeholder.installerAlertsDescription')}
-      milestone="M8"
+      milestone="M9"
       testID="installer-alerts"
     />
   );

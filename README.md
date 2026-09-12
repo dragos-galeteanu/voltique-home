@@ -169,6 +169,19 @@ produce zero, it produced an unknown amount.
 
 Only the day range keeps polling. A finished week or month cannot change.
 
+## Alerts and logs
+
+Three ideas, kept apart deliberately. Telemetry is measurement, logs are what the device
+said, and an alert is the platform's interpretation: a deduplicated problem with a
+lifecycle, derived server-side from logs, thresholds or lost contact.
+
+The app reads alerts and can only acknowledge or resolve them. It never decides what
+counts as a fault, and there is no delete, because a resolved alert reopens by itself if
+the condition returns. Both actions are optimistic and roll back if the server refuses.
+
+The alert inbox is the one list worth polling, since the payload is small and the tab
+badge depends on it. Device logs are paged by cursor and never refetched on their own.
+
 ## Languages
 
 The app ships in English, German, French, Italian and Spanish, following the device

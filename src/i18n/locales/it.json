@@ -105,6 +105,62 @@
     "recentEvents": "Eventi recenti",
     "noEvents": "Nessuna segnalazione."
   },
+  "alerts": {
+    "title": "Avvisi",
+    "inbox": "Guasti aperti",
+    "filterAll": "Tutti",
+    "filterOpen": "Aperti",
+    "filterAcknowledged": "Confermati",
+    "filterResolved": "Risolti",
+    "emptyTitle": "Nessun problema",
+    "emptyDescription": "Nessun guasto per questa abitazione.",
+    "emptyFiltered": "Nessun avviso per questo filtro.",
+    "acknowledge": "Conferma",
+    "resolve": "Risolvi",
+    "acknowledged": "Confermato",
+    "resolved": "Risolto",
+    "actionFailed": "Impossibile aggiornare l avviso",
+    "occurrences_one": "{{count}} occorrenza",
+    "occurrences_other": "{{count}} occorrenze",
+    "firstSeen": "Prima volta {{time}}",
+    "lastSeen": "Ultima volta {{time}}",
+    "derivedFrom": "Rilevato da",
+    "evidence": "Cosa ha segnalato il dispositivo",
+    "viewLogs": "Vedi tutti i log",
+    "severity": {
+      "critical": "Critico",
+      "warning": "Avvertenza"
+    },
+    "status": {
+      "open": "Aperto",
+      "acknowledged": "Confermato",
+      "resolved": "Risolto"
+    },
+    "source": {
+      "deviceLog": "Log del dispositivo",
+      "telemetryThreshold": "Soglia di misura",
+      "connectivity": "Perdita di contatto"
+    }
+  },
+  "logs": {
+    "title": "Log del dispositivo",
+    "empty": "Questo dispositivo non ha ancora segnalato nulla.",
+    "loadMore": "Carica altro",
+    "filterAll": "Tutti",
+    "minSeverity": "Gravità minima",
+    "source": {
+      "device": "Dispositivo",
+      "manufacturerCloud": "Produttore",
+      "platform": "Piattaforma"
+    },
+    "severity": {
+      "debug": "Debug",
+      "info": "Info",
+      "warning": "Avvertenza",
+      "error": "Errore",
+      "critical": "Critico"
+    }
+  },
   "addAsset": {
     "title": "Aggiungi dispositivo",
     "toHousehold": "a {{name}}",

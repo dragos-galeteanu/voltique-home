@@ -9,6 +9,8 @@ export type TabDefinition = {
   /** Translation key, resolved here so the tab bar follows the active language. */
   titleKey: 'tabs.dashboard' | 'tabs.assets' | 'tabs.alerts' | 'tabs.settings' | 'tabs.households';
   icon: keyof typeof Ionicons.glyphMap;
+  /** Shown on the tab when greater than zero. */
+  badgeCount?: number;
 };
 
 /**
@@ -39,6 +41,7 @@ export function RoleTabs({ tabs }: { tabs: TabDefinition[] }) {
           options={{
             title: t(tab.titleKey),
             tabBarButtonTestID: `tab-${tab.name}`,
+            tabBarBadge: tab.badgeCount && tab.badgeCount > 0 ? tab.badgeCount : undefined,
             tabBarIcon: ({ color, size }) => <Ionicons name={tab.icon} color={color} size={size} />,
           }}
         />

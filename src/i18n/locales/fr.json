@@ -105,6 +105,62 @@
     "recentEvents": "Événements récents",
     "noEvents": "Rien à signaler pour le moment."
   },
+  "alerts": {
+    "title": "Alertes",
+    "inbox": "Pannes ouvertes",
+    "filterAll": "Toutes",
+    "filterOpen": "Ouvertes",
+    "filterAcknowledged": "Acquittées",
+    "filterResolved": "Résolues",
+    "emptyTitle": "Rien à signaler",
+    "emptyDescription": "Aucune panne pour ce logement.",
+    "emptyFiltered": "Aucune alerte pour ce filtre.",
+    "acknowledge": "Acquitter",
+    "resolve": "Résoudre",
+    "acknowledged": "Acquittée",
+    "resolved": "Résolue",
+    "actionFailed": "Impossible de mettre à jour cette alerte",
+    "occurrences_one": "{{count}} occurrence",
+    "occurrences_other": "{{count}} occurrences",
+    "firstSeen": "Première fois {{time}}",
+    "lastSeen": "Dernière fois {{time}}",
+    "derivedFrom": "Détectée par",
+    "evidence": "Ce que l appareil a signalé",
+    "viewLogs": "Voir tous les journaux",
+    "severity": {
+      "critical": "Critique",
+      "warning": "Avertissement"
+    },
+    "status": {
+      "open": "Ouverte",
+      "acknowledged": "Acquittée",
+      "resolved": "Résolue"
+    },
+    "source": {
+      "deviceLog": "Journal de l appareil",
+      "telemetryThreshold": "Seuil de mesure",
+      "connectivity": "Perte de contact"
+    }
+  },
+  "logs": {
+    "title": "Journaux",
+    "empty": "Cet équipement n a encore rien signalé.",
+    "loadMore": "Charger plus",
+    "filterAll": "Tous",
+    "minSeverity": "Gravité minimale",
+    "source": {
+      "device": "Équipement",
+      "manufacturerCloud": "Fabricant",
+      "platform": "Plateforme"
+    },
+    "severity": {
+      "debug": "Débogage",
+      "info": "Info",
+      "warning": "Avertissement",
+      "error": "Erreur",
+      "critical": "Critique"
+    }
+  },
   "addAsset": {
     "title": "Ajouter un équipement",
     "toHousehold": "à {{name}}",

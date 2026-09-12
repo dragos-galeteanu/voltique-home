@@ -105,6 +105,62 @@
     "recentEvents": "Eventos recientes",
     "noEvents": "Todavía no hay nada que informar."
   },
+  "alerts": {
+    "title": "Alertas",
+    "inbox": "Fallos abiertos",
+    "filterAll": "Todas",
+    "filterOpen": "Abiertas",
+    "filterAcknowledged": "Confirmadas",
+    "filterResolved": "Resueltas",
+    "emptyTitle": "Nada que informar",
+    "emptyDescription": "No hay fallos en este hogar.",
+    "emptyFiltered": "Ninguna alerta con este filtro.",
+    "acknowledge": "Confirmar",
+    "resolve": "Resolver",
+    "acknowledged": "Confirmada",
+    "resolved": "Resuelta",
+    "actionFailed": "No se ha podido actualizar la alerta",
+    "occurrences_one": "{{count}} incidencia",
+    "occurrences_other": "{{count}} incidencias",
+    "firstSeen": "Primera vez {{time}}",
+    "lastSeen": "Última vez {{time}}",
+    "derivedFrom": "Detectada por",
+    "evidence": "Lo que informó el dispositivo",
+    "viewLogs": "Ver todos los registros",
+    "severity": {
+      "critical": "Crítica",
+      "warning": "Advertencia"
+    },
+    "status": {
+      "open": "Abierta",
+      "acknowledged": "Confirmada",
+      "resolved": "Resuelta"
+    },
+    "source": {
+      "deviceLog": "Registro del dispositivo",
+      "telemetryThreshold": "Umbral de medición",
+      "connectivity": "Pérdida de contacto"
+    }
+  },
+  "logs": {
+    "title": "Registros",
+    "empty": "Este dispositivo todavía no ha informado nada.",
+    "loadMore": "Cargar más",
+    "filterAll": "Todos",
+    "minSeverity": "Gravedad mínima",
+    "source": {
+      "device": "Dispositivo",
+      "manufacturerCloud": "Fabricante",
+      "platform": "Plataforma"
+    },
+    "severity": {
+      "debug": "Depuración",
+      "info": "Info",
+      "warning": "Advertencia",
+      "error": "Error",
+      "critical": "Crítica"
+    }
+  },
   "addAsset": {
     "title": "Añadir dispositivo",
     "toHousehold": "a {{name}}",
