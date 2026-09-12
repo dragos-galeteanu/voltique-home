@@ -106,6 +106,7 @@ export default function AssetsScreen() {
           renderItem={({ item }) => (
             <AssetRow
               asset={item}
+              onPress={() => router.push(`/consumer/asset/${item.id}`)}
               onLongPress={() => setPendingRemoval({ id: item.id, name: item.name })}
             />
           )}

@@ -13,7 +13,8 @@
     "minutesAgo": "{{count}} min ago",
     "hoursAgo": "{{count}} h ago",
     "daysAgo": "{{count}} d ago",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "back": "Back"
   },
   "errors": {
     "generic": "Something went wrong",
@@ -61,6 +62,21 @@
     "emptyTitle": "No household yet",
     "emptyDescription": "Create a household first. Assets, alerts and installer access all hang off it."
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "energy": "Energy",
+    "rangeDay": "Day",
+    "rangeWeek": "Week",
+    "rangeMonth": "Month",
+    "production": "Production",
+    "consumption": "Consumption",
+    "produced": "Produced",
+    "consumed": "Consumed",
+    "peak": "Peak output",
+    "fromGrid": "From grid",
+    "battery": "Battery",
+    "noData": "No readings for this period yet."
+  },
   "assets": {
     "title": "Assets",
     "add": "Add asset",
@@ -81,6 +97,13 @@
       "commissioning": "Connecting",
       "unknown": "Unknown"
     }
+  },
+  "assetDetail": {
+    "power": "Power",
+    "stateOfCharge": "State of charge",
+    "overRange": "Over this period",
+    "recentEvents": "Recent events",
+    "noEvents": "Nothing reported yet."
   },
   "addAsset": {
     "title": "Add asset",

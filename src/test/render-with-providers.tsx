@@ -1,10 +1,12 @@
 import { render, type RenderOptions } from '@testing-library/react-native';
 import type { ReactElement, ReactNode } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as StoreProvider } from 'react-redux';
 
 import { api } from '@/api/api';
 import { ThemeProvider } from '@/design-system';
+import { i18n } from '@/i18n';
 import { type AppStore, createStore } from '@/store/create-store';
 
 const created: AppStore[] = [];
@@ -42,9 +44,11 @@ export async function renderWithProviders(
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <StoreProvider store={store}>
-        <SafeAreaProvider initialMetrics={METRICS}>
-          <ThemeProvider preference="dark">{children}</ThemeProvider>
-        </SafeAreaProvider>
+        <I18nextProvider i18n={i18n}>
+          <SafeAreaProvider initialMetrics={METRICS}>
+            <ThemeProvider preference="dark">{children}</ThemeProvider>
+          </SafeAreaProvider>
+        </I18nextProvider>
       </StoreProvider>
     );
   }

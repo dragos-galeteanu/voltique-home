@@ -1,6 +1,7 @@
 import { SplashScreen, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as StoreProvider } from 'react-redux';
@@ -10,7 +11,7 @@ import { ThemeProvider, ToastProvider } from '@/design-system';
 import { selectAuthStatus } from '@/features/auth/auth-slice';
 import { useSessionRestore } from '@/features/auth/use-session-restore';
 import { selectLanguagePreference, selectThemePreference } from '@/features/ui/ui-slice';
-import { changeLocale, resolveDeviceLocale } from '@/i18n';
+import { changeLocale, i18n, resolveDeviceLocale } from '@/i18n';
 import { initObservability, Sentry } from '@/observability/sentry';
 import { store } from '@/store';
 import { useAppSelector } from '@/store/hooks';
@@ -57,11 +58,13 @@ function ThemedApp() {
   }, [status]);
 
   return (
-    <ThemeProvider preference={preference}>
-      <ToastProvider>
-        <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false }} />
-      </ToastProvider>
-    </ThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider preference={preference}>
+        <ToastProvider>
+          <StatusBar style="auto" />
+          <Stack screenOptions={{ headerShown: false }} />
+        </ToastProvider>
+      </ThemeProvider>
+    </I18nextProvider>
   );
 }

@@ -7,7 +7,15 @@ import { formatEnergy, formatPower, formatRelativeTime } from '@/lib/format-ener
 
 import { ASSET_STATUS_PRESENTATION } from './asset-status';
 
-export function AssetRow({ asset, onLongPress }: { asset: Asset; onLongPress: () => void }) {
+export function AssetRow({
+  asset,
+  onPress,
+  onLongPress,
+}: {
+  asset: Asset;
+  onPress: () => void;
+  onLongPress: () => void;
+}) {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -19,6 +27,7 @@ export function AssetRow({ asset, onLongPress }: { asset: Asset; onLongPress: ()
       accessibilityRole="button"
       accessibilityLabel={`${asset.name}, ${statusLabel}`}
       accessibilityHint={t('assets.holdToRemove')}
+      onPress={onPress}
       onLongPress={onLongPress}
       testID={`asset-row-${asset.id}`}
     >

@@ -21,7 +21,9 @@ const asset: Asset = {
 
 describe('AssetRow', () => {
   it('shows the name, the status and both readings in human units', async () => {
-    await renderWithProviders(<AssetRow asset={asset} onLongPress={jest.fn()} />);
+    await renderWithProviders(
+      <AssetRow asset={asset} onPress={jest.fn()} onLongPress={jest.fn()} />,
+    );
 
     expect(screen.getByText('Roof array')).toBeOnTheScreen();
     expect(screen.getByText('Online')).toBeOnTheScreen();
@@ -31,7 +33,11 @@ describe('AssetRow', () => {
 
   it('labels a faulted asset as faulted', async () => {
     await renderWithProviders(
-      <AssetRow asset={{ ...asset, status: 'faulted' }} onLongPress={jest.fn()} />,
+      <AssetRow
+        asset={{ ...asset, status: 'faulted' }}
+        onPress={jest.fn()}
+        onLongPress={jest.fn()}
+      />,
     );
 
     expect(screen.getByText('Faulted')).toBeOnTheScreen();
@@ -41,6 +47,7 @@ describe('AssetRow', () => {
     await renderWithProviders(
       <AssetRow
         asset={{ ...asset, latestReading: undefined, lastSeenAt: undefined }}
+        onPress={jest.fn()}
         onLongPress={jest.fn()}
       />,
     );
@@ -50,7 +57,9 @@ describe('AssetRow', () => {
   });
 
   it('is reachable by assistive technology as one labelled control', async () => {
-    await renderWithProviders(<AssetRow asset={asset} onLongPress={jest.fn()} />);
+    await renderWithProviders(
+      <AssetRow asset={asset} onPress={jest.fn()} onLongPress={jest.fn()} />,
+    );
 
     expect(screen.getByLabelText('Roof array, Online')).toBeOnTheScreen();
   });

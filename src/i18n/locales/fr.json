@@ -13,7 +13,8 @@
     "minutesAgo": "il y a {{count}} min",
     "hoursAgo": "il y a {{count}} h",
     "daysAgo": "il y a {{count}} j",
-    "unknown": "inconnu"
+    "unknown": "inconnu",
+    "back": "Retour"
   },
   "errors": {
     "generic": "Une erreur est survenue",
@@ -61,6 +62,21 @@
     "emptyTitle": "Aucun logement",
     "emptyDescription": "Créez d'abord un logement. Les équipements, les alertes et l'accès installateur en dépendent."
   },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "energy": "Énergie",
+    "rangeDay": "Jour",
+    "rangeWeek": "Semaine",
+    "rangeMonth": "Mois",
+    "production": "Production",
+    "consumption": "Consommation",
+    "produced": "Produit",
+    "consumed": "Consommé",
+    "peak": "Puissance maximale",
+    "fromGrid": "Depuis le réseau",
+    "battery": "Batterie",
+    "noData": "Aucune mesure pour cette période pour le moment."
+  },
   "assets": {
     "title": "Équipements",
     "add": "Ajouter un équipement",
@@ -81,6 +97,13 @@
       "commissioning": "Connexion",
       "unknown": "Inconnu"
     }
+  },
+  "assetDetail": {
+    "power": "Puissance",
+    "stateOfCharge": "État de charge",
+    "overRange": "Sur cette période",
+    "recentEvents": "Événements récents",
+    "noEvents": "Rien à signaler pour le moment."
   },
   "addAsset": {
     "title": "Ajouter un équipement",

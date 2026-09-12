@@ -13,7 +13,8 @@
     "minutesAgo": "hace {{count}} min",
     "hoursAgo": "hace {{count}} h",
     "daysAgo": "hace {{count}} d",
-    "unknown": "desconocido"
+    "unknown": "desconocido",
+    "back": "Atrás"
   },
   "errors": {
     "generic": "Algo ha fallado",
@@ -61,6 +62,21 @@
     "emptyTitle": "Todavía no hay hogar",
     "emptyDescription": "Crea primero un hogar. Los dispositivos, las alertas y el acceso del instalador dependen de él."
   },
+  "dashboard": {
+    "title": "Panel",
+    "energy": "Energía",
+    "rangeDay": "Día",
+    "rangeWeek": "Semana",
+    "rangeMonth": "Mes",
+    "production": "Producción",
+    "consumption": "Consumo",
+    "produced": "Producida",
+    "consumed": "Consumida",
+    "peak": "Potencia máxima",
+    "fromGrid": "De la red",
+    "battery": "Batería",
+    "noData": "Todavía no hay mediciones para este periodo."
+  },
   "assets": {
     "title": "Dispositivos",
     "add": "Añadir dispositivo",
@@ -81,6 +97,13 @@
       "commissioning": "Conectando",
       "unknown": "Desconocido"
     }
+  },
+  "assetDetail": {
+    "power": "Potencia",
+    "stateOfCharge": "Estado de carga",
+    "overRange": "En este periodo",
+    "recentEvents": "Eventos recientes",
+    "noEvents": "Todavía no hay nada que informar."
   },
   "addAsset": {
     "title": "Añadir dispositivo",

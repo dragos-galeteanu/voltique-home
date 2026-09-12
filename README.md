@@ -152,6 +152,23 @@ npm run mock:start && npm run e2e:build:ios && npm run e2e:test:ios
 Every interactive element carries a `testID`, which is what both layers select on.
 Detox on Android points the app at `10.0.2.2`, since an emulator cannot see `localhost`.
 
+## Dashboard
+
+Charts are Victory Native on Skia. The chart component draws what it is handed and owns
+no fetching, no range logic and no derived figures, so the household view and the
+per-asset view share it.
+
+Time windows are computed in the household's timezone, never the device's, because that
+is where the server buckets daily and monthly totals. The logic is tested against both
+daylight-saving transitions, since those days are 23 and 25 hours long and a naive
+implementation is wrong twice a year.
+
+A null bucket means the server had no reading. It is drawn as a break in the line and
+contributes nothing to a total, because an inverter that was unreachable at noon did not
+produce zero, it produced an unknown amount.
+
+Only the day range keeps polling. A finished week or month cannot change.
+
 ## Languages
 
 The app ships in English, German, French, Italian and Spanish, following the device

@@ -1,8 +1,12 @@
 // React Native Testing Library v14 registers its matchers on import, no extra setup.
 
+// Initialises i18next once for every test. Without it, useTranslation has no instance
+// and components render their keys instead of copy.
+import '@/i18n';
+
 // Reanimated drives the sheet and the toast. Its native worklets runtime does not exist
 // under Jest, so animations are stubbed and components render in their final state.
-// jest.mock factories are hoisted above imports, so the mock is required inside it.
+// The factory is hoisted above imports, hence the require inside it.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
