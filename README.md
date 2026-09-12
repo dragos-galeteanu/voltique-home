@@ -169,6 +169,26 @@ produce zero, it produced an unknown amount.
 
 Only the day range keeps polling. A finished week or month cannot change.
 
+## Notifications
+
+Faults are pushed through the Expo push service. The handset registers its token with our
+API after signing in, and unregisters on sign out, so a shared phone stops receiving
+someone else's faults. The token is write-only in the contract: no endpoint returns it,
+because holding it is enough to send to the device.
+
+Permission is asked for on the alerts screen, not at first launch. Someone looking at a
+list of faults understands what they are agreeing to; someone who has just installed the
+app does not, and usually refuses. Declining hides the prompt rather than repeating it.
+
+Tapping a notification opens what it refers to, including when it launched the app from
+cold. A consumer lands on the alert, where it can be acknowledged. An installer has no
+alert screen, so they land on the device log, which is what they actually need. Anything
+unrecognised opens nothing rather than guessing.
+
+Which faults reach a handset is a per-device setting, held by the server rather than
+mirrored locally, so it survives a reinstall and can differ between someone's phone and
+their tablet.
+
 ## Roles and access
 
 A household owner invites people from settings. A resident sees everything and can add

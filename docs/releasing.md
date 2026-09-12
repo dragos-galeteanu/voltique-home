@@ -28,6 +28,11 @@ bundle exec fastlane ios certificates
 service account granted release permission. Google requires the first build on a track to
 be uploaded by hand, so do that once before trusting the lane.
 
+**Push credentials.** Expo sends the notifications, but the platforms still need their
+own keys: an APNs key for iOS and a Firebase service account for Android, both uploaded
+to the Expo project. Without them registration succeeds and nothing is ever delivered,
+which is the failure mode most likely to go unnoticed.
+
 **An upload keystore** for Android. Generate it, back it up somewhere durable, and store
 it base64 encoded. Losing it means losing the ability to update the app.
 

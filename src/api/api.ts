@@ -25,6 +25,7 @@ export const api = createApi({
     'Telemetry',
     'Log',
     'Alert',
+    'Device',
   ],
   endpoints: () => ({}),
 });

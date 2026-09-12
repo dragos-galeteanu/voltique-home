@@ -202,6 +202,23 @@
       "critical": "Kritisch"
     }
   },
+  "notifications": {
+    "channelName": "Störungen",
+    "promptTitle": "Erfahren, wenn etwas ausfällt",
+    "promptDescription": "Erhalten Sie eine Mitteilung, wenn ein Gerät ausfällt, statt selbst nachsehen zu müssen.",
+    "promptAllow": "Mitteilungen aktivieren",
+    "promptLater": "Jetzt nicht",
+    "deniedTitle": "Mitteilungen sind aus",
+    "deniedDescription": "Aktivieren Sie sie für Voltique Home in den Geräteeinstellungen, falls Sie es sich anders überlegen.",
+    "settingsTitle": "Mitteilungen",
+    "enabled": "Mitteilungen senden",
+    "minSeverity": "Benachrichtigen bei",
+    "severityWarning": "Warnungen und Störungen",
+    "severityCritical": "Nur schwere Störungen",
+    "unavailable": "Push-Mitteilungen benötigen ein echtes Gerät, keinen Simulator.",
+    "updateFailed": "Einstellung konnte nicht geändert werden",
+    "notRegistered": "Dieses Gerät ist noch nicht registriert."
+  },
   "addAsset": {
     "title": "Gerät hinzufügen",
     "toHousehold": "zu {{name}}",

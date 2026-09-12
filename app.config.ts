@@ -76,6 +76,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-router',
       'expo-font',
       [
+        'expo-notifications',
+        {
+          icon: './assets/images/android-icon-monochrome.png',
+          color: '#0EA5E9',
+        },
+      ],
+      [
         '@sentry/react-native/expo',
         {
           // Source maps are uploaded during the native build when a token is present.
@@ -104,6 +111,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       appVersion: version,
       buildNumber,
       sentryDsn: process.env.SENTRY_DSN,
+      easProjectId: process.env.EAS_PROJECT_ID,
     },
   };
 };

@@ -202,6 +202,23 @@
       "critical": "Critical"
     }
   },
+  "notifications": {
+    "channelName": "Faults",
+    "promptTitle": "Know when something breaks",
+    "promptDescription": "Get a notification when an asset stops working, so you are not relying on opening the app.",
+    "promptAllow": "Turn on notifications",
+    "promptLater": "Not now",
+    "deniedTitle": "Notifications are off",
+    "deniedDescription": "Turn them on for Voltique Home in your device settings if you change your mind.",
+    "settingsTitle": "Notifications",
+    "enabled": "Send notifications",
+    "minSeverity": "Notify me about",
+    "severityWarning": "Warnings and faults",
+    "severityCritical": "Only serious faults",
+    "unavailable": "Push notifications need a real device, not a simulator.",
+    "updateFailed": "Could not change that setting",
+    "notRegistered": "This device is not registered yet."
+  },
   "addAsset": {
     "title": "Add asset",
     "toHousehold": "to {{name}}",

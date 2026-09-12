@@ -9,6 +9,7 @@ import { Screen, Text, useTheme } from '@/design-system';
 import { type AlertFilter, AlertFilters } from '@/features/alerts/alert-filters';
 import { sortForInbox } from '@/features/alerts/alert-presentation';
 import { AlertRow } from '@/features/alerts/alert-row';
+import { PermissionPrompt } from '@/features/notifications/permission-prompt';
 
 const POLL_MS = 30_000;
 
@@ -29,6 +30,7 @@ export default function InstallerAlertsScreen() {
     <Screen testID="installer-alerts">
       <View style={{ gap: theme.spacing.md }}>
         <Text variant="display">{t('alerts.title')}</Text>
+        <PermissionPrompt />
         <AlertFilters value={filter} onChange={setFilter} />
       </View>
 

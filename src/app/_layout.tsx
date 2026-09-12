@@ -10,6 +10,8 @@ import { RouteErrorBoundary } from '@/components/route-error-boundary';
 import { ThemeProvider, ToastProvider } from '@/design-system';
 import { selectAuthStatus } from '@/features/auth/auth-slice';
 import { useSessionRestore } from '@/features/auth/use-session-restore';
+import { useNotificationTaps } from '@/features/notifications/use-notification-taps';
+import { usePushRegistration } from '@/features/notifications/use-push-registration';
 import { selectLanguagePreference, selectThemePreference } from '@/features/ui/ui-slice';
 import { changeLocale, i18n, resolveDeviceLocale } from '@/i18n';
 import { initObservability, Sentry } from '@/observability/sentry';
@@ -48,6 +50,8 @@ function ThemedApp() {
   const status = useAppSelector(selectAuthStatus);
 
   useSessionRestore();
+  usePushRegistration();
+  useNotificationTaps();
 
   useEffect(() => {
     void changeLocale(language === 'system' ? resolveDeviceLocale() : language);

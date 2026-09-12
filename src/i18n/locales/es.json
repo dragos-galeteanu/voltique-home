@@ -202,6 +202,23 @@
       "critical": "Crítica"
     }
   },
+  "notifications": {
+    "channelName": "Fallos",
+    "promptTitle": "Enterarte cuando algo falla",
+    "promptDescription": "Recibe una notificación cuando un dispositivo deje de funcionar, sin tener que abrir la app.",
+    "promptAllow": "Activar notificaciones",
+    "promptLater": "Ahora no",
+    "deniedTitle": "Notificaciones desactivadas",
+    "deniedDescription": "Actívalas para Voltique Home en los ajustes del dispositivo si cambias de idea.",
+    "settingsTitle": "Notificaciones",
+    "enabled": "Enviar notificaciones",
+    "minSeverity": "Avisarme de",
+    "severityWarning": "Advertencias y fallos",
+    "severityCritical": "Solo fallos graves",
+    "unavailable": "Las notificaciones push necesitan un dispositivo real, no un simulador.",
+    "updateFailed": "No se ha podido cambiar el ajuste",
+    "notRegistered": "Este dispositivo aún no está registrado."
+  },
   "addAsset": {
     "title": "Añadir dispositivo",
     "toHousehold": "a {{name}}",

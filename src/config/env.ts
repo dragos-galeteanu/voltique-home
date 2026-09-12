@@ -14,6 +14,8 @@ const appExtraSchema = z.object({
   buildNumber: z.string(),
   /** Absent means crash reporting stays off, which is the case for a local checkout. */
   sentryDsn: z.string().optional(),
+  /** Needed to mint an Expo push token. Absent in a local checkout, where push is off. */
+  easProjectId: z.string().optional(),
 });
 
 type AppExtra = z.infer<typeof appExtraSchema>;

@@ -10,6 +10,22 @@ import '@/i18n';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
+jest.mock('expo-notifications', () => ({
+  getPermissionsAsync: jest.fn(async () => ({ status: 'undetermined' })),
+  requestPermissionsAsync: jest.fn(async () => ({ status: 'granted' })),
+  getExpoPushTokenAsync: jest.fn(async () => ({ data: 'ExponentPushToken[test]' })),
+  setNotificationChannelAsync: jest.fn(async () => undefined),
+  getLastNotificationResponseAsync: jest.fn(async () => null),
+  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  AndroidImportance: { HIGH: 4 },
+}));
+
+jest.mock('expo-device', () => ({
+  isDevice: true,
+  manufacturer: 'Apple',
+  modelName: 'iPhone 17',
+}));
+
 // Secure storage is a native module; tests exercise the code that calls it, not the
 // keychain itself.
 jest.mock('expo-secure-store', () => ({

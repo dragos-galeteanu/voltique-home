@@ -5,6 +5,7 @@ export const addTagTypes = [
   'Household',
   'Member',
   'Invite',
+  'Device',
   'AssetCatalogue',
   'Asset',
   'Telemetry',
@@ -139,6 +140,36 @@ const injectedRtkApi = api
           method: 'POST',
         }),
         invalidatesTags: ['Invite'],
+      }),
+      listDevices: build.query<ListDevicesApiResponse, ListDevicesApiArg>({
+        query: () => ({ url: `/devices` }),
+        providesTags: ['Device'],
+      }),
+      registerDevice: build.mutation<RegisterDeviceApiResponse, RegisterDeviceApiArg>({
+        query: (queryArg) => ({
+          url: `/devices`,
+          method: 'POST',
+          body: queryArg.deviceRegistration,
+        }),
+        invalidatesTags: ['Device'],
+      }),
+      updateDeviceNotifications: build.mutation<
+        UpdateDeviceNotificationsApiResponse,
+        UpdateDeviceNotificationsApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/devices/${queryArg.deviceId}`,
+          method: 'PATCH',
+          body: queryArg.notificationPreferences,
+        }),
+        invalidatesTags: ['Device'],
+      }),
+      unregisterDevice: build.mutation<UnregisterDeviceApiResponse, UnregisterDeviceApiArg>({
+        query: (queryArg) => ({
+          url: `/devices/${queryArg.deviceId}`,
+          method: 'DELETE',
+        }),
+        invalidatesTags: ['Device'],
       }),
       listAssetTypes: build.query<ListAssetTypesApiResponse, ListAssetTypesApiArg>({
         query: () => ({ url: `/asset-types` }),
@@ -355,6 +386,22 @@ export type AcceptInviteApiArg = {
   /** Opaque token from the invitation link. */
   token: string;
 };
+export type ListDevicesApiResponse = /** status 200 The caller's devices */ Device[];
+export type ListDevicesApiArg = void;
+export type RegisterDeviceApiResponse =
+  /** status 200 The device, whether newly registered or updated */ Device;
+export type RegisterDeviceApiArg = {
+  deviceRegistration: DeviceRegistration;
+};
+export type UpdateDeviceNotificationsApiResponse = /** status 200 The updated device */ Device;
+export type UpdateDeviceNotificationsApiArg = {
+  deviceId: string;
+  notificationPreferences: NotificationPreferences;
+};
+export type UnregisterDeviceApiResponse = unknown;
+export type UnregisterDeviceApiArg = {
+  deviceId: string;
+};
 export type ListAssetTypesApiResponse = /** status 200 Asset types */ AssetType[];
 export type ListAssetTypesApiArg = void;
 export type ListManufacturersApiResponse = /** status 200 Manufacturers */ Manufacturer[];
@@ -556,6 +603,33 @@ export type InviteCreate = {
   membershipRole: MembershipRole;
   message?: string;
 };
+export type DevicePlatform = 'ios' | 'android';
+export type AlertSeverity = 'warning' | 'critical';
+export type NotificationPreferences = {
+  enabled: boolean;
+  minSeverity: AlertSeverity;
+};
+export type Device = {
+  id: string;
+  platform: DevicePlatform;
+  label?: string;
+  notifications: NotificationPreferences;
+  createdAt: string;
+  lastSeenAt?: string;
+};
+export type DeviceRegistration = {
+  /** Expo push token for this installation. Write only: no endpoint returns it,
+    since possessing it is enough to send to the device.
+     */
+  pushToken: string;
+  platform: DevicePlatform;
+  /** How the person recognises this handset in a list. */
+  label?: string;
+  appVersion?: string;
+  /** Language to send the notification in, as a BCP 47 tag. */
+  locale?: string;
+  notifications?: NotificationPreferences;
+};
 export type AssetCategory = 'production' | 'consumption' | 'storage' | 'bidirectional';
 export type AssetMetric = 'power' | 'energy' | 'stateOfCharge' | 'temperature';
 export type AssetType = {
@@ -681,7 +755,6 @@ export type LogEntry = {
 export type LogEntryPage = PageMeta & {
   data: LogEntry[];
 };
-export type AlertSeverity = 'warning' | 'critical';
 export type AlertStatus = 'open' | 'acknowledged' | 'resolved';
 export type AlertSource = 'deviceLog' | 'telemetryThreshold' | 'connectivity';
 export type Alert = {
@@ -733,6 +806,11 @@ export const {
   useCreateHouseholdInviteMutation,
   useRevokeInviteMutation,
   useAcceptInviteMutation,
+  useListDevicesQuery,
+  useLazyListDevicesQuery,
+  useRegisterDeviceMutation,
+  useUpdateDeviceNotificationsMutation,
+  useUnregisterDeviceMutation,
   useListAssetTypesQuery,
   useLazyListAssetTypesQuery,
   useListManufacturersQuery,

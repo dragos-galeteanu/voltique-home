@@ -43,6 +43,8 @@ tags:
     description: Raw device events.
   - name: Alert
     description: Server-derived problems with a lifecycle.
+  - name: Device
+    description: Handsets registered to receive push notifications.
 paths:
   /auth/sessions:
     post:
@@ -372,6 +374,102 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+  /devices:
+    get:
+      operationId: listDevices
+      summary: List the devices registered for notifications
+      tags: [Device]
+      responses:
+        '200':
+          description: The caller's devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+              example:
+                - id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+                  platform: ios
+                  label: Ada's iPhone
+                  notifications:
+                    enabled: true
+                    minSeverity: warning
+                  createdAt: '2026-09-01T08:00:00Z'
+                  lastSeenAt: '2026-09-12T08:30:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: registerDevice
+      summary: Register this device for push notifications
+      description: |
+        Called after signing in, once the person has allowed notifications. Registering
+        the same token twice updates the existing record rather than creating another, so
+        a reinstall or a token refresh cannot produce duplicates.
+      tags: [Device]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceRegistration'
+      responses:
+        '200':
+          description: The device, whether newly registered or updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+              example:
+                id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+                platform: ios
+                label: Ada's iPhone
+                notifications:
+                  enabled: true
+                  minSeverity: warning
+                createdAt: '2026-09-01T08:00:00Z'
+                lastSeenAt: '2026-09-12T08:30:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /devices/{deviceId}:
+    parameters:
+      - name: deviceId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    patch:
+      operationId: updateDeviceNotifications
+      summary: Change what this device is notified about
+      tags: [Device]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferences'
+      responses:
+        '200':
+          description: The updated device
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: unregisterDevice
+      summary: Stop sending notifications to this device
+      description: Called on sign out, so a shared handset stops receiving someone else's faults.
+      tags: [Device]
+      responses:
+        '204':
+          description: Unregistered
+        '404':
+          $ref: '#/components/responses/NotFound'
   /asset-types:
     get:
       operationId: listAssetTypes
@@ -1559,6 +1657,60 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Invite'
+    DevicePlatform:
+      type: string
+      enum: [ios, android]
+    NotificationPreferences:
+      type: object
+      description: |
+        What this handset is told about. Severity is the floor, so choosing critical means
+        warnings stay in the app without buzzing anyone at night.
+      required: [enabled, minSeverity]
+      properties:
+        enabled:
+          type: boolean
+        minSeverity:
+          $ref: '#/components/schemas/AlertSeverity'
+    DeviceRegistration:
+      type: object
+      required: [pushToken, platform]
+      properties:
+        pushToken:
+          type: string
+          description: |
+            Expo push token for this installation. Write only: no endpoint returns it,
+            since possessing it is enough to send to the device.
+        platform:
+          $ref: '#/components/schemas/DevicePlatform'
+        label:
+          type: string
+          description: How the person recognises this handset in a list.
+        appVersion:
+          type: string
+        locale:
+          type: string
+          description: Language to send the notification in, as a BCP 47 tag.
+        notifications:
+          $ref: '#/components/schemas/NotificationPreferences'
+    Device:
+      type: object
+      required: [id, platform, notifications, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        platform:
+          $ref: '#/components/schemas/DevicePlatform'
+        label:
+          type: string
+        notifications:
+          $ref: '#/components/schemas/NotificationPreferences'
+        createdAt:
+          type: string
+          format: date-time
+        lastSeenAt:
+          type: string
+          format: date-time
     AssetCategory:
       type: string
       description: How an asset participates in the household's energy balance.

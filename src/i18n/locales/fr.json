@@ -202,6 +202,23 @@
       "critical": "Critique"
     }
   },
+  "notifications": {
+    "channelName": "Pannes",
+    "promptTitle": "Savoir quand quelque chose tombe en panne",
+    "promptDescription": "Recevez une notification quand un équipement s arrête, sans avoir à ouvrir l application.",
+    "promptAllow": "Activer les notifications",
+    "promptLater": "Plus tard",
+    "deniedTitle": "Notifications désactivées",
+    "deniedDescription": "Activez-les pour Voltique Home dans les réglages de votre appareil si vous changez d avis.",
+    "settingsTitle": "Notifications",
+    "enabled": "Envoyer des notifications",
+    "minSeverity": "Me prévenir pour",
+    "severityWarning": "Avertissements et pannes",
+    "severityCritical": "Pannes graves uniquement",
+    "unavailable": "Les notifications push nécessitent un appareil réel, pas un simulateur.",
+    "updateFailed": "Impossible de modifier ce réglage",
+    "notRegistered": "Cet appareil n est pas encore enregistré."
+  },
   "addAsset": {
     "title": "Ajouter un équipement",
     "toHousehold": "à {{name}}",

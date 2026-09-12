@@ -11,6 +11,7 @@ import { type AlertFilter, AlertFilters } from '@/features/alerts/alert-filters'
 import { sortForInbox } from '@/features/alerts/alert-presentation';
 import { AlertRow } from '@/features/alerts/alert-row';
 import { useSelectedHousehold } from '@/features/household/use-selected-household';
+import { PermissionPrompt } from '@/features/notifications/permission-prompt';
 
 /** Alerts are small and change on their own, so this is the one list worth polling. */
 export const ALERT_POLL_MS = 30_000;
@@ -65,6 +66,7 @@ export default function AlertsScreen() {
     <Screen testID="consumer-alerts">
       <View style={{ gap: theme.spacing.md }}>
         <Text variant="display">{t('alerts.title')}</Text>
+        <PermissionPrompt />
         <AlertFilters value={filter} onChange={setFilter} />
       </View>
 
