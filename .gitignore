@@ -180,3 +180,8 @@ fastlane/test_output
 # IDE
 .idea/
 .DS_Store
+
+# Release tooling
+/vendor/bundle
+/build/ios
+fastlane/play-service-account.json

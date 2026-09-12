@@ -1,5 +1,7 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
+import { version } from './package.json';
+
 /**
  * Build-time configuration. Everything environment specific is resolved here and
  * handed to the app through `extra`, so the running code reads one validated
@@ -43,7 +45,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     // per variant. The user-visible label comes from the settings below.
     name: 'Voltique Home',
     slug: 'voltique-home',
-    version: '0.1.0',
+    // The marketing version lives in package.json so a release bumps one file.
+    version,
     orientation: 'portrait',
     scheme: 'voltique',
     userInterfaceStyle: 'automatic',

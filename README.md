@@ -127,6 +127,10 @@ exactly the URLs it sends to production.
 Since the spec's examples are what the mock returns, they double as the fixtures for
 end-to-end runs. Keep them realistic.
 
+`npm run mock:local` serves the same thing without Docker, for machines and CI runners
+that have no daemon. It runs Prism directly with a small proxy in front for the version
+prefix, which is what the iOS end-to-end job uses on its macOS runner.
+
 ## Testing
 
 Two layers, with different jobs.
@@ -175,11 +179,21 @@ derived from the same source, so headers and tab bars cannot drift.
 Commits follow Conventional Commits, enforced by commitlint on `commit-msg`.
 Staged files are linted and formatted on `pre-commit`.
 
-## Known gaps
+## Continuous integration and releases
 
-Typed routes are generated into `.expo/types` by the dev server, and that folder is not
-committed. A CI typecheck therefore validates everything except route paths until the
-pipeline regenerates them, which M5 sorts out.
+Every pull request runs the contract validation, a check that the generated client is not
+stale, typecheck, lint, formatting and the Jest suite, plus a Metro bundle of both
+platforms. Detox is too slow for that, so it runs nightly and before every release.
+
+Releases are manual and deliberate: pick a platform and a variant, and the workflow runs
+the end-to-end suite, regenerates the native projects, then ships to TestFlight and the
+Play internal track. [docs/releasing.md](docs/releasing.md) covers the accounts, the
+signing material and the secrets, none of which live in this repository.
+
+Route paths are only type-checked when `.expo/types` exists, and that folder is not
+committed, so CI regenerates it with `npm run typegen` before typechecking.
+
+## Known gaps
 
 ## Known toolchain gap
 

@@ -1,0 +1,107 @@
+# Release automation.
+#
+# The native projects are generated, so every lane regenerates them from app.config.ts
+# before building. Version numbers come in through the environment and are baked in by
+# that same prebuild, which is why no lane edits an Xcode project or a Gradle file.
+
+default_platform(:ios)
+
+APP_VARIANTS = {
+  "staging" => { identifier: "com.voltique.home.staging" },
+  "production" => { identifier: "com.voltique.home" }
+}.freeze
+
+def app_variant
+  variant = ENV.fetch("APP_VARIANT", "production")
+  UI.user_error!("Unknown APP_VARIANT #{variant}") unless APP_VARIANTS.key?(variant)
+  variant
+end
+
+def build_number
+  # One monotonic number per CI run, shared by both stores.
+  ENV.fetch("BUILD_NUMBER", Time.now.strftime("%Y%m%d%H%M"))
+end
+
+# Regenerates ios/ and android/ with the right identity and version numbers.
+def prebuild(platform)
+  variant = app_variant
+  sh(
+    {
+      "APP_VARIANT" => variant,
+      "IOS_BUILD_NUMBER" => build_number,
+      "ANDROID_VERSION_CODE" => build_number
+    },
+    "npx", "expo", "prebuild", "--clean", "--platform", platform.to_s
+  )
+  APP_VARIANTS.fetch(variant)[:identifier]
+end
+
+platform :ios do
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    identifier = prebuild(:ios)
+    ENV["IOS_BUNDLE_IDENTIFIER"] = identifier
+
+    setup_ci if is_ci
+
+    app_store_connect_api_key(
+      key_id: ENV.fetch("APP_STORE_CONNECT_KEY_ID"),
+      issuer_id: ENV.fetch("APP_STORE_CONNECT_ISSUER_ID"),
+      key_content: ENV.fetch("APP_STORE_CONNECT_KEY_CONTENT"),
+      is_key_content_base64: true
+    )
+
+    match(type: "appstore", app_identifier: identifier, readonly: true)
+
+    cocoapods(podfile: "ios/Podfile")
+
+    build_app(
+      workspace: "ios/VoltiqueHome.xcworkspace",
+      scheme: "VoltiqueHome",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build/ios",
+      clean: true
+    )
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      changelog: ENV.fetch("RELEASE_NOTES", "Internal build #{build_number}")
+    )
+  end
+
+  desc "Refresh signing assets. Run by a person, not by CI."
+  lane :certificates do
+    match(type: "appstore", readonly: false)
+  end
+end
+
+platform :android do
+  desc "Build an app bundle and upload to the Play internal track"
+  lane :internal do
+    prebuild(:android)
+
+    gradle(task: "clean", project_dir: "android/")
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android/",
+      properties: {
+        "android.injected.signing.store.file" => ENV.fetch("ANDROID_KEYSTORE_PATH"),
+        "android.injected.signing.store.password" => ENV.fetch("ANDROID_KEYSTORE_PASSWORD"),
+        "android.injected.signing.key.alias" => ENV.fetch("ANDROID_KEY_ALIAS"),
+        "android.injected.signing.key.password" => ENV.fetch("ANDROID_KEY_PASSWORD")
+      }
+    )
+
+    upload_to_play_store(
+      track: "internal",
+      release_status: "draft",
+      skip_upload_apk: true,
+      # Store copy is uploaded deliberately, not as a side effect of shipping a build.
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end

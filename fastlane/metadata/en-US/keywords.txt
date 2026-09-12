@@ -1,0 +1,1 @@
+energy,solar,battery,ev charger,heat pump,home,consumption,monitoring

@@ -1,0 +1,120 @@
+name: Release
+
+# Releases are deliberate, so this never runs on a push. Pick the platform and the
+# variant, and the run number becomes the build number on both stores.
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Which store to ship to
+        required: true
+        default: both
+        type: choice
+        options: [ios, android, both]
+      variant:
+        description: Build variant
+        required: true
+        default: production
+        type: choice
+        options: [staging, production]
+      notes:
+        description: What testers should know
+        required: false
+        type: string
+
+jobs:
+  e2e:
+    name: End-to-end
+    uses: ./.github/workflows/e2e.yml
+
+  ios:
+    name: TestFlight
+    needs: e2e
+    if: inputs.platform == 'ios' || inputs.platform == 'both'
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    env:
+      APP_VARIANT: ${{ inputs.variant }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      RELEASE_NOTES: ${{ inputs.notes }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_DEVELOPER_TEAM_ID: ${{ secrets.APPLE_DEVELOPER_TEAM_ID }}
+      APP_STORE_CONNECT_TEAM_ID: ${{ secrets.APP_STORE_CONNECT_TEAM_ID }}
+      APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY_CONTENT }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - run: npm ci
+
+      - name: Build and upload
+        run: bundle exec fastlane ios beta
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-build-logs
+          path: ~/Library/Logs/gym
+          retention-days: 7
+
+  android:
+    name: Play internal track
+    needs: e2e
+    if: inputs.platform == 'android' || inputs.platform == 'both'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      APP_VARIANT: ${{ inputs.variant }}
+      BUILD_NUMBER: ${{ github.run_number }}
+      RELEASE_NOTES: ${{ inputs.notes }}
+      ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/release.keystore
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      PLAY_SERVICE_ACCOUNT_JSON_PATH: ${{ github.workspace }}/play-service-account.json
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - run: npm ci
+
+      # Both are written from secrets and removed with the runner.
+      - name: Write signing material
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+          echo '${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}' > "$PLAY_SERVICE_ACCOUNT_JSON_PATH"
+
+      - name: Build and upload
+        run: bundle exec fastlane android internal

@@ -1,0 +1,11 @@
+# Identity per build variant. Everything here is read from the environment so the same
+# lanes work locally and in CI, and so no account details are committed.
+app_identifier ENV.fetch("IOS_BUNDLE_IDENTIFIER", "com.voltique.home")
+apple_id ENV["APPLE_ID"]
+itc_team_id ENV["APP_STORE_CONNECT_TEAM_ID"]
+team_id ENV["APPLE_DEVELOPER_TEAM_ID"]
+
+for_platform :android do
+  json_key_file ENV.fetch("PLAY_SERVICE_ACCOUNT_JSON_PATH", "fastlane/play-service-account.json")
+  package_name ENV.fetch("ANDROID_PACKAGE_NAME", "com.voltique.home")
+end

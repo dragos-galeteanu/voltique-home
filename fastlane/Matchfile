@@ -1,0 +1,7 @@
+# Signing certificates and profiles live in a private repository, encrypted by match.
+# Nothing in this repository holds a certificate or a private key.
+git_url ENV.fetch("MATCH_GIT_URL")
+storage_mode "git"
+type "appstore"
+app_identifier [ENV.fetch("IOS_BUNDLE_IDENTIFIER", "com.voltique.home")]
+readonly true

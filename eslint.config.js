@@ -27,4 +27,10 @@ module.exports = defineConfig([
       eqeqeq: ['error', 'always', { null: 'ignore' }],
     },
   },
+  {
+    // Build scripts report to the terminal; that is their output, not a stray log.
+    // Flat config is order sensitive, so this has to come after the block above.
+    files: ['scripts/**'],
+    rules: { 'no-console': 'off' },
+  },
 ]);

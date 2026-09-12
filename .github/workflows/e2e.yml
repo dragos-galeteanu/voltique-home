@@ -1,0 +1,126 @@
+name: End-to-end
+
+# Detox needs a simulator or an emulator, which makes it too slow for every pull
+# request. It runs nightly, before a release, and on demand.
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  ios:
+    name: iOS simulator
+    runs-on: macos-15
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - run: npm ci
+
+      # macOS runners have no Docker daemon, so the mock runs directly on the runner.
+      - name: Start the mock API
+        run: |
+          npm run mock:local &
+          for attempt in $(seq 1 45); do
+            curl -sf http://localhost:4010/health && break
+            sleep 2
+          done
+          curl -sf http://localhost:4010/health
+
+      - name: Generate native projects
+        run: npm run prebuild
+        env:
+          APP_VARIANT: development
+
+      - name: Install pods
+        run: bundle exec pod install --project-directory=ios
+
+      - uses: futureware-tech/simulator-action@v4
+        with:
+          model: iPhone 17
+
+      - name: Build the app for Detox
+        run: npm run e2e:build:ios
+
+      - name: Run Detox
+        run: npm run e2e:test:ios -- --cleanup
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: detox-artifacts-ios
+          path: artifacts/
+          retention-days: 7
+
+  android:
+    name: Android emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - run: npm ci
+
+      - name: Start the mock API
+        run: |
+          npm run mock:start
+          for attempt in $(seq 1 30); do
+            curl -sf http://localhost:4010/health && break
+            sleep 2
+          done
+          curl -sf http://localhost:4010/health
+
+      - name: Generate native projects
+        run: npm run prebuild
+        env:
+          APP_VARIANT: development
+          # The emulator reaches the runner's localhost at this address.
+          API_ORIGIN: http://10.0.2.2:4010
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Build and run Detox
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          avd-name: Pixel_8_API_35
+          script: |
+            npm run e2e:build:android
+            npm run e2e:test:android -- --cleanup
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: detox-artifacts-android
+          path: artifacts/
+          retention-days: 7

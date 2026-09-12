@@ -30,7 +30,9 @@
     "e2e:build:ios": "detox build --configuration ios.sim.debug",
     "e2e:test:ios": "detox test --configuration ios.sim.debug",
     "e2e:build:android": "detox build --configuration android.emu.debug",
-    "e2e:test:android": "detox test --configuration android.emu.debug"
+    "e2e:test:android": "detox test --configuration android.emu.debug",
+    "typegen": "node scripts/generate-route-types.mjs",
+    "mock:local": "node scripts/mock-local.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
