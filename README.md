@@ -169,6 +169,26 @@ produce zero, it produced an unknown amount.
 
 Only the day range keeps polling. A finished week or month cannot change.
 
+## Working offline
+
+The last data the API returned survives a cold start, so a phone with no signal in a
+cellar still shows the dashboard, the asset list and the alerts it showed last time,
+under a banner saying when the data was captured.
+
+What is kept is deliberately narrow. Only queries that completed are written to disk;
+pending and failed ones would restore as a spinner for a request nobody made. Mutations
+are dropped entirely, so no write can ever come back from a file. The session is never
+persisted here: tokens belong in the keychain, and a test asserts the snapshot contains
+no access token.
+
+Writes are refused while offline rather than queued. A queued change the person cannot
+see, applied minutes later against data that has moved on, is worse than being told
+plainly that it needs a connection. The refusal happens in one place, the API client, so
+every screen reports it the same way.
+
+Connectivity treats unknown as usable. Nothing is blocked before the first check, which
+is why the banner does not flash on launch.
+
 ## Notifications
 
 Faults are pushed through the Expo push service. The handset registers its token with our

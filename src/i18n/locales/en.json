@@ -219,6 +219,13 @@
     "updateFailed": "Could not change that setting",
     "notRegistered": "This device is not registered yet."
   },
+  "network": {
+    "offline": "You are offline",
+    "showingCached": "Showing what was saved {{time}}",
+    "writeBlocked": "You are offline. This change needs a connection.",
+    "stale": "Saved {{time}}",
+    "reconnected": "Back online"
+  },
   "addAsset": {
     "title": "Add asset",
     "toHousehold": "to {{name}}",

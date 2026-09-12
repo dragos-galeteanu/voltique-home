@@ -219,6 +219,13 @@
     "updateFailed": "No se ha podido cambiar el ajuste",
     "notRegistered": "Este dispositivo aún no está registrado."
   },
+  "network": {
+    "offline": "Estás sin conexión",
+    "showingCached": "Mostrando lo guardado {{time}}",
+    "writeBlocked": "Estás sin conexión. Este cambio necesita conexión.",
+    "stale": "Guardado {{time}}",
+    "reconnected": "De nuevo en línea"
+  },
   "addAsset": {
     "title": "Añadir dispositivo",
     "toHousehold": "a {{name}}",

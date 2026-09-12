@@ -219,6 +219,13 @@
     "updateFailed": "Impossibile modificare l impostazione",
     "notRegistered": "Questo dispositivo non è ancora registrato."
   },
+  "network": {
+    "offline": "Sei offline",
+    "showingCached": "Mostra i dati di {{time}}",
+    "writeBlocked": "Sei offline. Questa modifica richiede una connessione.",
+    "stale": "Salvato {{time}}",
+    "reconnected": "Di nuovo online"
+  },
   "addAsset": {
     "title": "Aggiungi dispositivo",
     "toHousehold": "a {{name}}",

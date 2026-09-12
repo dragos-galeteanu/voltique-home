@@ -23,6 +23,10 @@ export function getProblem(error: unknown): ProblemDetails | null {
  */
 export function getErrorMessage(error: unknown, fallback?: string): string {
   const problem = getProblem(error);
+
+  // Raised by the client itself when there is no connection, so it is worded here.
+  if (problem?.code === 'client_offline') return i18n.t('network.writeBlocked');
+
   if (problem) return problem.detail ?? problem.title;
 
   if (error && typeof error === 'object' && 'status' in error) {

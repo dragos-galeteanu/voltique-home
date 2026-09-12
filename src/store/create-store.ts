@@ -6,8 +6,11 @@ import { registerAuthListeners } from '@/features/auth/auth-listeners';
 import { authReducer } from '@/features/auth/auth-slice';
 import { householdReducer } from '@/features/household/household-slice';
 import { inviteReducer } from '@/features/invites/invite-slice';
+import { networkReducer } from '@/features/network/network-slice';
 import { notificationReducer } from '@/features/notifications/notification-slice';
 import { uiReducer } from '@/features/ui/ui-slice';
+
+import { cacheReducer } from './persistence/cache-slice';
 
 /**
  * Builds an isolated store. The app uses one of these; each test gets its own, so no
@@ -22,7 +25,9 @@ export function createStore() {
       auth: authReducer,
       household: householdReducer,
       invite: inviteReducer,
+      network: networkReducer,
       notifications: notificationReducer,
+      cache: cacheReducer,
       ui: uiReducer,
       [api.reducerPath]: api.reducer,
     },

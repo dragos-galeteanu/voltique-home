@@ -219,6 +219,13 @@
     "updateFailed": "Impossible de modifier ce réglage",
     "notRegistered": "Cet appareil n est pas encore enregistré."
   },
+  "network": {
+    "offline": "Vous êtes hors ligne",
+    "showingCached": "Affiche les données de {{time}}",
+    "writeBlocked": "Vous êtes hors ligne. Ce changement nécessite une connexion.",
+    "stale": "Enregistré {{time}}",
+    "reconnected": "De nouveau en ligne"
+  },
   "addAsset": {
     "title": "Ajouter un équipement",
     "toHousehold": "à {{name}}",

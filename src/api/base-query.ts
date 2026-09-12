@@ -15,7 +15,17 @@ import type { AuthTokens } from '@/features/auth/types';
  * The slice of state this module needs. Typing it structurally rather than importing
  * RootState keeps the store from depending on the API client and back again.
  */
-type AuthAwareState = { auth: AuthState };
+type AuthAwareState = { auth: AuthState; network?: { online: boolean | null } };
+
+/** Problem details for a write attempted with no connection, worded like any other. */
+const OFFLINE_PROBLEM = {
+  status: 503,
+  data: {
+    title: 'offline',
+    status: 503,
+    code: 'client_offline',
+  },
+} as const;
 
 /** How long a single request may take before it is abandoned. */
 const REQUEST_TIMEOUT_MS = 20_000;
@@ -83,6 +93,15 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  const method = typeof args === 'string' ? 'GET' : (args.method ?? 'GET');
+  const online = (api.getState() as AuthAwareState).network?.online;
+
+  // Reads fall through to the cache; writes are refused outright, because a queued write
+  // the person cannot see is worse than being told it did not happen.
+  if (online === false && method !== 'GET') {
+    return { error: OFFLINE_PROBLEM as unknown as FetchBaseQueryError };
+  }
+
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error?.status !== 401) return result;

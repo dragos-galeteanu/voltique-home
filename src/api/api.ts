@@ -1,5 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
+import { cacheRehydrated } from '@/store/persistence/cache-slice';
+
 import { baseQueryWithReauth } from './base-query';
 
 /**
@@ -27,5 +29,19 @@ export const api = createApi({
     'Alert',
     'Device',
   ],
+  /**
+   * Restores the cache written at the last cold start, so a phone with no signal still
+   * shows the dashboard, assets and alerts it showed last time.
+   */
+  extractRehydrationInfo(action) {
+    if (!cacheRehydrated.match(action)) return undefined;
+
+    // The snapshot holds only completed queries. RTK Query reads `queries` and
+    // `mutations` from what it is handed and rebuilds everything else, so the narrower
+    // shape is widened here rather than padded with structures that get discarded.
+    // Naming the full type would refer to this slice while defining it. A test covers
+    // that a restored query really does come back.
+    return action.payload.api as never;
+  },
   endpoints: () => ({}),
 });

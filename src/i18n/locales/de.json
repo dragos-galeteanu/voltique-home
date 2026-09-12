@@ -219,6 +219,13 @@
     "updateFailed": "Einstellung konnte nicht geändert werden",
     "notRegistered": "Dieses Gerät ist noch nicht registriert."
   },
+  "network": {
+    "offline": "Sie sind offline",
+    "showingCached": "Zeigt den Stand von {{time}}",
+    "writeBlocked": "Sie sind offline. Diese Änderung benötigt eine Verbindung.",
+    "stale": "Stand {{time}}",
+    "reconnected": "Wieder online"
+  },
   "addAsset": {
     "title": "Gerät hinzufügen",
     "toHousehold": "zu {{name}}",
