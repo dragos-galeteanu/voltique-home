@@ -57,6 +57,43 @@ if they arrived through a link.
 A development build also offers a shortcut into the installer shell, because the mock
 always signs in as a consumer. It is `__DEV__` only.
 
+## Creating an account
+
+Sign-up creates a consumer account and signs it in, so someone lands in the app rather than
+back on a sign-in screen. Installers are never created this way: they arrive through an
+invitation, which is why the form has no role to choose.
+
+The form validates before it sends, including that both passwords match, so a mismatch
+never becomes a request. One failure is worded by the app rather than shown as the server
+sent it: an address that already has an account, because that tells the person what to do
+next.
+
+## Forgetting a password
+
+`/forgot-password` asks for an address and always answers the same way, whether or not that
+address has an account. Telling a caller which addresses exist turns the screen into a way
+to enumerate accounts. The API behaves identically, so neither layer leaks it.
+
+The link lands on `/reset-password/<token>`, reachable while signed out, which is the whole
+point. It is also the one screen in the signed-out group that a signed-in person is allowed
+to reach: someone can follow a reset link on a phone where they are still signed in, and
+bouncing them to the dashboard would leave them unable to change the password they came to
+change.
+
+Setting a new password revokes every existing session server-side, so the app sends them to
+sign in with it rather than pretending the current session is still good.
+
+## Deleting an account
+
+Settings offers account deletion, which both app stores require to be possible from inside
+the app. It asks for the current password, because a phone left unlocked should not be two
+taps from an erased account, and it says what will be deleted before the button rather than
+after it.
+
+Once the server confirms, the handset is detached from push notifications while the token
+still works, and the app signs out, which clears everything stored about that person. See
+[decision 0013](decisions/0013-account-deletion.md).
+
 ## Sign-out
 
 Signing out does three things in order: it detaches this handset from push notifications

@@ -42,6 +42,44 @@ const injectedRtkApi = api
         query: () => ({ url: `/users/me` }),
         providesTags: ['CurrentUser'],
       }),
+      signUp: build.mutation<SignUpApiResponse, SignUpApiArg>({
+        query: (queryArg) => ({
+          url: `/auth/registrations`,
+          method: 'POST',
+          body: queryArg.registrationRequest,
+        }),
+        invalidatesTags: ['Auth'],
+      }),
+      requestPasswordReset: build.mutation<
+        RequestPasswordResetApiResponse,
+        RequestPasswordResetApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/auth/password-resets`,
+          method: 'POST',
+          body: queryArg.passwordResetRequest,
+        }),
+        invalidatesTags: ['Auth'],
+      }),
+      confirmPasswordReset: build.mutation<
+        ConfirmPasswordResetApiResponse,
+        ConfirmPasswordResetApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/auth/password-resets/${queryArg.token}`,
+          method: 'POST',
+          body: queryArg.passwordResetConfirmation,
+        }),
+        invalidatesTags: ['Auth'],
+      }),
+      deleteAccount: build.mutation<DeleteAccountApiResponse, DeleteAccountApiArg>({
+        query: (queryArg) => ({
+          url: `/users/me/deletion`,
+          method: 'POST',
+          body: queryArg.accountDeletionRequest,
+        }),
+        invalidatesTags: ['CurrentUser'],
+      }),
       listHouseholds: build.query<ListHouseholdsApiResponse, ListHouseholdsApiArg>({
         query: (queryArg) => ({
           url: `/households`,
@@ -328,6 +366,24 @@ export type SignOutApiResponse = unknown;
 export type SignOutApiArg = void;
 export type GetCurrentUserApiResponse = /** status 200 The signed-in user */ User;
 export type GetCurrentUserApiArg = void;
+export type SignUpApiResponse = /** status 201 Account created and signed in */ Session;
+export type SignUpApiArg = {
+  registrationRequest: RegistrationRequest;
+};
+export type RequestPasswordResetApiResponse = unknown;
+export type RequestPasswordResetApiArg = {
+  passwordResetRequest: PasswordResetRequest;
+};
+export type ConfirmPasswordResetApiResponse = unknown;
+export type ConfirmPasswordResetApiArg = {
+  /** Opaque token from the reset link. */
+  token: string;
+  passwordResetConfirmation: PasswordResetConfirmation;
+};
+export type DeleteAccountApiResponse = unknown;
+export type DeleteAccountApiArg = {
+  accountDeletionRequest: AccountDeletionRequest;
+};
 export type ListHouseholdsApiResponse = /** status 200 A page of households */ HouseholdPage;
 export type ListHouseholdsApiArg = {
   /** Opaque cursor from the previous page's `nextCursor`. */
@@ -537,6 +593,23 @@ export type SignInRequest = {
 };
 export type RefreshRequest = {
   refreshToken: string;
+};
+export type RegistrationRequest = {
+  email: string;
+  password: string;
+  displayName: string;
+  /** When the person accepted the terms, if acceptance is recorded. */
+  acceptedTermsAt?: string;
+};
+export type PasswordResetRequest = {
+  email: string;
+};
+export type PasswordResetConfirmation = {
+  password: string;
+};
+export type AccountDeletionRequest = {
+  /** The current password, as a confirmation that this is deliberate. */
+  password: string;
 };
 export type PageMeta = {
   /** Cursor for the next page, or null on the last page. */
@@ -791,6 +864,10 @@ export const {
   useSignOutMutation,
   useGetCurrentUserQuery,
   useLazyGetCurrentUserQuery,
+  useSignUpMutation,
+  useRequestPasswordResetMutation,
+  useConfirmPasswordResetMutation,
+  useDeleteAccountMutation,
   useListHouseholdsQuery,
   useLazyListHouseholdsQuery,
   useCreateHouseholdMutation,

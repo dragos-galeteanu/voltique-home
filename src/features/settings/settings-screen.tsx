@@ -19,6 +19,7 @@ import {
   selectRecentEnabled,
   selectRecentItems,
 } from '@/features/recent/recent-slice';
+import { DeleteAccount } from '@/features/settings/delete-account';
 import {
   type LanguagePreference,
   languagePreferenceChanged,
@@ -252,6 +253,8 @@ export function SettingsScreen() {
           });
         }}
       />
+
+      <DeleteAccount />
     </Screen>
   );
 }

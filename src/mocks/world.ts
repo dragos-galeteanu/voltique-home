@@ -26,6 +26,13 @@ export type World = {
   assets: Asset[];
   alerts: Alert[];
   devices: Device[];
+  /**
+   * The account's password, so sign-in, deletion and a password reset can be exercised
+   * against something rather than accepting anything.
+   */
+  password: string;
+  /** Reset links handed out by this session, so confirming one can fail convincingly. */
+  resetTokens: string[];
   /** Every request fails with this status, for exercising error states. */
   failWith: number | null;
   /** Artificial delay, for seeing loading states that are otherwise instant. */
@@ -53,6 +60,8 @@ export function createWorld(): World {
     assets: page<Asset>(fixtureBodies.listHouseholdAssets),
     alerts: page<Alert>(fixtureBodies.listAlerts),
     devices: clone((fixtureBodies.listDevices as Device[] | undefined) ?? []),
+    password: 'password1',
+    resetTokens: [],
     failWith: null,
     latencyMs: 0,
   };

@@ -22,6 +22,14 @@ export const fixtureRoutes: FixtureRoute[] = [
     status: 200,
   },
   {
+    operationId: 'confirmPasswordReset',
+    method: 'POST',
+    path: '/auth/password-resets/{token}',
+    pattern: '^/auth/password-resets/([^/]+)$',
+    params: ['token'],
+    status: 204,
+  },
+  {
     operationId: 'createHousehold',
     method: 'POST',
     path: '/households',
@@ -44,6 +52,14 @@ export const fixtureRoutes: FixtureRoute[] = [
     pattern: '^/households/([^/]+)/invites$',
     params: ['householdId'],
     status: 201,
+  },
+  {
+    operationId: 'deleteAccount',
+    method: 'POST',
+    path: '/users/me/deletion',
+    pattern: '^/users/me/deletion$',
+    params: [],
+    status: 204,
   },
   {
     operationId: 'deleteAsset',
@@ -222,6 +238,14 @@ export const fixtureRoutes: FixtureRoute[] = [
     status: 204,
   },
   {
+    operationId: 'requestPasswordReset',
+    method: 'POST',
+    path: '/auth/password-resets',
+    pattern: '^/auth/password-resets$',
+    params: [],
+    status: 202,
+  },
+  {
     operationId: 'revokeInvite',
     method: 'DELETE',
     path: '/invites/{inviteId}',
@@ -244,6 +268,14 @@ export const fixtureRoutes: FixtureRoute[] = [
     pattern: '^/auth/sessions/current$',
     params: [],
     status: 204,
+  },
+  {
+    operationId: 'signUp',
+    method: 'POST',
+    path: '/auth/registrations',
+    pattern: '^/auth/registrations$',
+    params: [],
+    status: 201,
   },
   {
     operationId: 'unregisterDevice',
@@ -881,6 +913,20 @@ export const fixtureBodies: Record<string, unknown> = {
     lastSeenAt: '2026-09-12T08:30:00Z',
   },
   signIn: {
+    user: {
+      id: '6f1e2d3c-4b5a-4c7d-8e9f-0a1b2c3d4e5f',
+      email: 'ada@example.com',
+      displayName: 'Ada',
+      role: 'consumer',
+      createdAt: '2026-01-14T09:12:00Z',
+    },
+    tokens: {
+      accessToken: 'stub.access.token',
+      refreshToken: 'stub.refresh.token',
+      expiresIn: 900,
+    },
+  },
+  signUp: {
     user: {
       id: '6f1e2d3c-4b5a-4c7d-8e9f-0a1b2c3d4e5f',
       email: 'ada@example.com',

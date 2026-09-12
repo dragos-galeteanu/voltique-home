@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -8,6 +9,7 @@ import { useAppDispatch } from '@/store/hooks';
 
 export default function SignInScreen() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { t } = useTranslation();
 
   return (
@@ -18,6 +20,20 @@ export default function SignInScreen() {
       </View>
 
       <SignInForm />
+
+      <Button
+        label={t('account.forgotPassword')}
+        variant="ghost"
+        testID="go-to-forgot-password"
+        onPress={() => router.push('/forgot-password')}
+      />
+
+      <Button
+        label={t('account.noAccount')}
+        variant="secondary"
+        testID="go-to-sign-up"
+        onPress={() => router.push('/sign-up')}
+      />
 
       {__DEV__ ? (
         <Surface gap="md">

@@ -44,6 +44,70 @@ export const handlers: Record<string, Handler> = {
     return created({ user: world.user, tokens: fixtureBodies.refreshSession });
   },
   getCurrentUser: (world) => ok(world.user),
+  signUp: (world, { body }) => {
+    const email = String(body?.email ?? 'new@example.com');
+
+    if (email === world.user.email) {
+      return {
+        status: 409,
+        body: {
+          title: 'Address already registered',
+          status: 409,
+          code: 'email_already_registered',
+        },
+      };
+    }
+
+    world.user = {
+      ...world.user,
+      id: newId('user'),
+      email,
+      displayName: String(body?.displayName ?? email.split('@')[0]),
+      role: 'consumer',
+    };
+    world.password = String(body?.password ?? world.password);
+    // A new account owns nothing yet, which is the state worth seeing after signing up.
+    world.households = [];
+    world.assets = [];
+    world.alerts = [];
+    world.invites = [];
+    world.members = [];
+
+    return created({ user: world.user, tokens: fixtureBodies.refreshSession });
+  },
+  requestPasswordReset: (world) => {
+    world.resetTokens = [...world.resetTokens, 'reset-token'];
+    // Always the same answer, whether or not the address exists.
+    return { status: 202 };
+  },
+  confirmPasswordReset: (world, { params, body }) => {
+    if (!world.resetTokens.includes(String(params.token))) {
+      return {
+        status: 404,
+        body: { title: 'Link no longer valid', status: 404, code: 'reset_token_invalid' },
+      };
+    }
+
+    world.password = String(body?.password ?? world.password);
+    world.resetTokens = world.resetTokens.filter((token) => token !== params.token);
+    return noContent();
+  },
+  deleteAccount: (world, { body }) => {
+    if (String(body?.password ?? '') !== world.password) {
+      return {
+        status: 403,
+        body: { title: 'Password incorrect', status: 403, code: 'password_incorrect' },
+      };
+    }
+
+    world.households = [];
+    world.assets = [];
+    world.alerts = [];
+    world.invites = [];
+    world.members = [];
+    world.devices = [];
+    return noContent();
+  },
 
   // --- households ------------------------------------------------------------
   listHouseholds: (world, { query }) => paged(world.households, query),

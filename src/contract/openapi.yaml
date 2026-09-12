@@ -116,6 +116,133 @@ paths:
                 $ref: '#/components/schemas/User'
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /auth/registrations:
+    post:
+      operationId: signUp
+      summary: Create an account
+      description: |
+        Creates a consumer account and signs it in, so the person lands in the app rather
+        than back on a sign-in screen. Installers are not created this way: they arrive
+        through an invitation.
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequest'
+      responses:
+        '201':
+          description: Account created and signed in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '409':
+          description: That address already has an account
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                title: Address already registered
+                status: 409
+                code: email_already_registered
+                detail: An account already exists for that email address.
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /auth/password-resets:
+    post:
+      operationId: requestPasswordReset
+      summary: Ask for a password reset link
+      description: |
+        Always answers the same way, whether or not the address has an account. Telling a
+        caller which addresses exist would turn this into an account enumeration tool.
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+      responses:
+        '202':
+          description: If the address has an account, a link is on its way
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /auth/password-resets/{token}:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        description: Opaque token from the reset link.
+        schema:
+          type: string
+    post:
+      operationId: confirmPasswordReset
+      summary: Set a new password using a reset link
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmation'
+      responses:
+        '204':
+          description: Password changed. Existing sessions are revoked.
+        '404':
+          description: The link is unknown, expired or already used
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                title: Link no longer valid
+                status: 404
+                code: reset_token_invalid
+                detail: Ask for a new link and try again.
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /users/me/deletion:
+    post:
+      operationId: deleteAccount
+      summary: Delete this account and everything in it
+      description: |
+        Permanent and immediate. Households the caller owns are deleted with their assets,
+        telemetry, logs and alerts; households they merely belong to lose them as a member.
+        The current password is required, because a phone left unlocked should not be able
+        to erase someone's account.
+      tags: [CurrentUser]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountDeletionRequest'
+      responses:
+        '204':
+          description: Account deleted. Every session is revoked.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: The password did not match
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              example:
+                title: Password incorrect
+                status: 403
+                code: password_incorrect
+                detail: Enter your current password to delete the account.
   /households:
     get:
       operationId: listHouseholds
@@ -1496,6 +1623,45 @@ components:
       properties:
         refreshToken:
           type: string
+    RegistrationRequest:
+      type: object
+      required: [email, password, displayName]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 80
+        acceptedTermsAt:
+          type: string
+          format: date-time
+          description: When the person accepted the terms, if acceptance is recorded.
+    PasswordResetRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    PasswordResetConfirmation:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          minLength: 8
+    AccountDeletionRequest:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          description: The current password, as a confirmation that this is deliberate.
     Address:
       type: object
       properties:

@@ -11,8 +11,17 @@ tap. The table is generated into `.expo/types`, which is not committed, so CI ru
 flowchart TD
     Index["/<br/>decides where you belong"]
     SignIn["/sign-in"]
+    SignUp["/sign-up"]
+    Forgot["/forgot-password"]
+    Reset["/reset-password/:token"]
     Invite["/invite/:token"]
     Logs["/logs/:assetId<br/>device logs"]
+
+    SignIn --> SignUp
+    SignIn --> Forgot
+    Forgot -. "emailed link" .-> Reset
+    Reset --> SignIn
+    SignUp --> Index
 
     Index -->|"signed out"| SignIn
     Index -->|"invitation waiting"| Invite
@@ -92,6 +101,10 @@ tabs rather than being squeezed into one.
 The scheme is `voltique`. An invitation arrives as `voltique://invite/<token>`. Opened
 while signed out, the token is held in the store, the person is sent to sign in, and the
 entry route brings them back to it, so a link is never lost.
+
+A password reset link lands the same way, at `voltique://reset-password/<token>`. It is
+reachable while signed out, and it is the one screen in the signed-out group a signed-in
+person is also allowed to open.
 
 Universal and app links are not configured. That needs domain association files, which
 belong with the real domain rather than with this code.
