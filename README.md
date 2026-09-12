@@ -206,6 +206,37 @@ produce zero, it produced an unknown amount.
 
 Only the day range keeps polling. A finished week or month cannot change.
 
+## What the app stores on the device
+
+Every key is declared in one file, [src/storage/registry.ts](src/storage/registry.ts).
+If it is not listed there, the app does not keep it. Screens never touch storage
+directly, which is what makes that list trustworthy.
+
+| Key            | Where    | Belongs to | Holds                                                  |
+| -------------- | -------- | ---------- | ------------------------------------------------------ |
+| session        | keychain | person     | Access and refresh tokens                              |
+| appearance     | plain    | handset    | Theme and language                                     |
+| prompts        | plain    | handset    | Whether the notification prompt was dismissed          |
+| viewState      | plain    | person     | Last dashboard range, alert filter, selected household |
+| recentlyViewed | plain    | person     | Last few assets and households opened, off by default  |
+| cache          | plain    | person     | The offline read cache                                 |
+
+Scope is the important column. Signing out clears everything belonging to the person,
+including the cached data and anything recently opened, and keeps what belongs to the
+handset, so a phone handed to someone else remembers only how the screen looked.
+
+Each entry declares a schema and a version. A stored value that fails either is discarded
+rather than repaired, and nothing in this module throws: a device with unreadable storage
+runs with defaults instead of refusing to start.
+
+Recently viewed is the only thing here that records behaviour, so it is the only thing
+behind a switch. It is off until turned on in settings, the copy says plainly that it
+stays on the phone, and turning it off deletes what was collected rather than hiding it.
+Remembering your last tab or that you dismissed a prompt is a preference, not tracking,
+and prompting for it would only teach people to dismiss prompts.
+
+The app collects no analytics of any kind.
+
 ## Working offline
 
 The last data the API returned survives a cold start, so a phone with no signal in a

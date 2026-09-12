@@ -226,6 +226,15 @@
     "stale": "Saved {{time}}",
     "reconnected": "Back online"
   },
+  "recent": {
+    "title": "Recently opened",
+    "settingsTitle": "Remember what I open",
+    "settingsExplanation": "Keeps the last few assets and households you opened, so they are one tap away. Stored on this phone only, never sent anywhere, and deleted when you turn this off or sign out.",
+    "enable": "Remember",
+    "disable": "Stop remembering",
+    "clear": "Clear the list",
+    "cleared": "List cleared"
+  },
   "addAsset": {
     "title": "Add asset",
     "toHousehold": "to {{name}}",

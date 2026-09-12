@@ -1,12 +1,28 @@
 import { createAction, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { PersistedState } from './persisted-state';
+import type { RecentState } from '@/features/recent/recent-slice';
+import type { ViewState } from '@/features/view-state/view-state-slice';
+
+import type { CacheSnapshot } from './persisted-state';
 
 /**
- * The action that carries a restored snapshot into the store. The API slice picks it up
- * through `extractRehydrationInfo`, which is RTK Query's supported way back in.
+ * Everything read back from storage at launch, delivered as one action.
+ *
+ * Each slice takes what it recognises, including the API client, which picks up the
+ * cached responses through RTK Query's own rehydration hook. One action rather than six
+ * keeps the order of restoration from mattering.
  */
-export const cacheRehydrated = createAction<PersistedState>('cache/rehydrated');
+export type RestoredState = {
+  appearance?: { themePreference: string; languagePreference: string };
+  prompts?: { notificationPromptDismissed: boolean };
+  viewState?: ViewState;
+  recentlyViewed?: RecentState;
+  dev?: { mockScenario: string | null };
+  selectedHouseholdId?: string | null;
+  cache?: CacheSnapshot | null;
+};
+
+export const storageRestored = createAction<RestoredState>('storage/restored');
 
 export type CacheState = {
   /** When the restored data was captured, so screens can say how old it is. */
@@ -19,15 +35,10 @@ const initialState: CacheState = { restoredAt: null, hydrated: false };
 const cacheSlice = createSlice({
   name: 'cache',
   initialState,
-  reducers: {
-    /** Nothing was restored, but startup is finished. */
-    hydrationFinished(state) {
-      state.hydrated = true;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(cacheRehydrated, (state, action: PayloadAction<PersistedState>) => {
-      state.restoredAt = action.payload.savedAt;
+    builder.addCase(storageRestored, (state, action: PayloadAction<RestoredState>) => {
+      state.restoredAt = action.payload.cache?.savedAt ?? null;
       state.hydrated = true;
     });
   },
@@ -37,6 +48,5 @@ const cacheSlice = createSlice({
   },
 });
 
-export const { hydrationFinished } = cacheSlice.actions;
 export const { selectRestoredAt, selectHydrated } = cacheSlice.selectors;
 export const cacheReducer = cacheSlice.reducer;

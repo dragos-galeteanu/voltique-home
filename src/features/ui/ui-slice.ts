@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { ThemePreference } from '@/design-system';
 import type { SupportedLocale } from '@/i18n';
-import { cacheRehydrated } from '@/store/persistence/cache-slice';
+import { storageRestored } from '@/store/persistence/cache-slice';
 
 /** "system" follows the device; anything else is an explicit choice by the user. */
 export type LanguagePreference = 'system' | SupportedLocale;
@@ -30,11 +30,11 @@ const uiSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Appearance and language are the first thing someone notices resetting itself.
-    builder.addCase(cacheRehydrated, (state, action) => {
-      const restored = action.payload.ui;
+    builder.addCase(storageRestored, (state, action) => {
+      const restored = action.payload.appearance;
       if (!restored) return;
-      state.themePreference = restored.themePreference ?? state.themePreference;
-      state.languagePreference = restored.languagePreference ?? state.languagePreference;
+      state.themePreference = restored.themePreference as ThemePreference;
+      state.languagePreference = restored.languagePreference as LanguagePreference;
     });
   },
   selectors: {

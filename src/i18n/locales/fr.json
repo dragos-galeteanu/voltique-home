@@ -226,6 +226,15 @@
     "stale": "Enregistré {{time}}",
     "reconnected": "De nouveau en ligne"
   },
+  "recent": {
+    "title": "Ouverts récemment",
+    "settingsTitle": "Mémoriser ce que j ouvre",
+    "settingsExplanation": "Conserve les derniers équipements et logements ouverts, pour y revenir en un geste. Stocké uniquement sur ce téléphone, jamais envoyé, et supprimé si vous désactivez ceci ou vous déconnectez.",
+    "enable": "Mémoriser",
+    "disable": "Ne plus mémoriser",
+    "clear": "Effacer la liste",
+    "cleared": "Liste effacée"
+  },
   "addAsset": {
     "title": "Ajouter un équipement",
     "toHousehold": "à {{name}}",

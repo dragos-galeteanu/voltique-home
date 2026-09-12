@@ -1,31 +1,22 @@
 import type { RootState } from '@/store/create-store';
 
 /**
- * What survives a cold start, and in what shape.
+ * The offline read cache: the last thing the API returned, and when.
  *
- * Only read-only material is kept: the last data the API returned, which household was
- * selected, and how the person likes the app to look. Nothing here can be written back to
- * the server, so a stale cache can never turn into a wrong write.
+ * Preferences no longer live here. They are separate keys with their own scopes, so
+ * signing out can drop the data without resetting how the app looks.
  */
-export const PERSISTED_VERSION = 1;
+export const CACHE_VERSION = 2;
 
-export type PersistedState = {
-  version: number;
+export type CacheSnapshot = {
   /** When the snapshot was taken, so the app can say how old what you see is. */
   savedAt: string;
-  ui: RootState['ui'];
-  household: RootState['household'];
-  /** Development only: which mock scenario was running, so a reload keeps it. */
-  dev?: RootState['dev'];
   api: unknown;
 };
 
 type QueryEntry = {
   status?: string;
   data?: unknown;
-  originalArgs?: unknown;
-  endpointName?: string;
-  fulfilledTimeStamp?: number;
 };
 
 /** The shape RTK Query's invalidation reducer expects to merge into. */
@@ -63,34 +54,15 @@ export function sanitiseApiState(apiState: unknown): unknown {
   };
 }
 
-export function buildSnapshot(state: RootState, now: Date = new Date()): PersistedState {
+export function buildSnapshot(state: RootState, now: Date = new Date()): CacheSnapshot {
   return {
-    version: PERSISTED_VERSION,
     savedAt: now.toISOString(),
-    ui: state.ui,
-    household: state.household,
-    dev: state.dev,
     api: sanitiseApiState(state.api),
   };
 }
 
-/** Rejects anything written by an older shape, rather than guessing how to migrate it. */
-export function readSnapshot(raw: string | null): PersistedState | null {
-  if (!raw) return null;
-
-  try {
-    const parsed = JSON.parse(raw) as Partial<PersistedState>;
-    if (parsed.version !== PERSISTED_VERSION) return null;
-    if (typeof parsed.savedAt !== 'string') return null;
-
-    return parsed as PersistedState;
-  } catch {
-    return null;
-  }
-}
-
 /** How old the restored data is, in milliseconds, or null if nothing was restored. */
-export function snapshotAge(snapshot: PersistedState | null, now = Date.now()): number | null {
+export function snapshotAge(snapshot: CacheSnapshot | null, now = Date.now()): number | null {
   if (!snapshot) return null;
 
   const savedAt = Date.parse(snapshot.savedAt);

@@ -17,7 +17,12 @@ import { MetricTile } from '@/features/telemetry/metric-tile';
 import { buildWindow, type RangeKey } from '@/features/telemetry/range';
 import { RangeSelector } from '@/features/telemetry/range-selector';
 import { mergeSeries, summariseHousehold } from '@/features/telemetry/series';
+import {
+  dashboardRangeChanged,
+  selectDashboardRange,
+} from '@/features/view-state/view-state-slice';
 import { formatEnergy, formatPercent, formatPower } from '@/lib/format-energy';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 /** Only today keeps refreshing itself; a finished week or month will not change. */
 const LIVE_POLL_MS = 60_000;
@@ -29,7 +34,9 @@ export default function DashboardScreen() {
   const households = useSelectedHousehold();
   const household = households.household;
 
-  const [range, setRange] = useState<RangeKey>('day');
+  const dispatch = useAppDispatch();
+  const range = useAppSelector(selectDashboardRange);
+  const setRange = (next: RangeKey) => dispatch(dashboardRangeChanged(next));
   // Pinned so the window does not slide on every render, which would refetch endlessly.
   const [anchor, setAnchor] = useState(() => Date.now());
 

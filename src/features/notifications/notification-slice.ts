@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { signedOut } from '@/features/auth/auth-slice';
+import { storageRestored } from '@/store/persistence/cache-slice';
 
 export type PushPermission = 'unknown' | 'undetermined' | 'granted' | 'denied';
 
@@ -39,11 +40,15 @@ const notificationSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // The registration belongs to the person who signed in, not to the handset.
+    // The registration belongs to the person who signed in, not to the handset. Whether
+    // the prompt was waved off belongs to the handset, so it is deliberately kept.
     builder.addCase(signedOut, (state) => {
       state.deviceId = null;
-      state.promptDismissed = false;
       state.registrationError = null;
+    });
+
+    builder.addCase(storageRestored, (state, action) => {
+      state.promptDismissed = action.payload.prompts?.notificationPromptDismissed ?? false;
     });
   },
   selectors: {

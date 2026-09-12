@@ -14,6 +14,12 @@ import { selectCurrentUser, signedOut } from '@/features/auth/auth-slice';
 import { selectDeviceId, selectPushPermission } from '@/features/notifications/notification-slice';
 import { useUnregisterDevice } from '@/features/notifications/use-push-registration';
 import {
+  recentCleared,
+  recentTrackingChanged,
+  selectRecentEnabled,
+  selectRecentItems,
+} from '@/features/recent/recent-slice';
+import {
   type LanguagePreference,
   languagePreferenceChanged,
   selectLanguagePreference,
@@ -57,6 +63,9 @@ export function SettingsScreen() {
   const user = useAppSelector(selectCurrentUser);
   const preference = useAppSelector(selectThemePreference);
   const language = useAppSelector(selectLanguagePreference);
+
+  const recentEnabled = useAppSelector(selectRecentEnabled);
+  const recentItems = useAppSelector(selectRecentItems);
 
   const pushPermission = useAppSelector(selectPushPermission);
   const deviceId = useAppSelector(selectDeviceId);
@@ -186,6 +195,30 @@ export function SettingsScreen() {
             </View>
           </>
         )}
+      </Surface>
+
+      <Surface gap="md" testID="recent-settings">
+        <Text variant="heading">{t('recent.settingsTitle')}</Text>
+        <Text tone="secondary">{t('recent.settingsExplanation')}</Text>
+
+        <Button
+          label={recentEnabled ? t('recent.disable') : t('recent.enable')}
+          variant={recentEnabled ? 'secondary' : 'primary'}
+          onPress={() => dispatch(recentTrackingChanged(!recentEnabled))}
+          testID="recent-toggle"
+        />
+
+        {recentEnabled && recentItems.length > 0 ? (
+          <Button
+            label={t('recent.clear')}
+            variant="ghost"
+            onPress={() => {
+              dispatch(recentCleared());
+              showToast({ message: t('recent.cleared'), tone: 'info' });
+            }}
+            testID="recent-clear"
+          />
+        ) : null}
       </Surface>
 
       {user?.role === 'consumer' ? (

@@ -1,4 +1,5 @@
 import { signedOut } from '@/features/auth/auth-slice';
+import { storageRestored } from '@/store/persistence/cache-slice';
 
 import {
   deviceRegistered,
@@ -36,8 +37,18 @@ describe('notification slice', () => {
     const after = notificationReducer(state, signedOut());
 
     expect(after.deviceId).toBeNull();
-    expect(after.promptDismissed).toBe(false);
-    // Permission is the handset's, not the person's, so it survives.
+    // Permission and a dismissed prompt belong to the handset rather than the account,
+    // so the next person is neither asked again nor asked on someone else's behalf.
     expect(after.permission).toBe('granted');
+    expect(after.promptDismissed).toBe(true);
+  });
+
+  it('restores a dismissed prompt from storage, instead of asking at every launch', () => {
+    const restored = notificationReducer(
+      initial(),
+      storageRestored({ prompts: { notificationPromptDismissed: true } }),
+    );
+
+    expect(restored.promptDismissed).toBe(true);
   });
 });

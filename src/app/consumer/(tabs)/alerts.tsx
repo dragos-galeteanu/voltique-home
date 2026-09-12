@@ -1,6 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, RefreshControl, View } from 'react-native';
 
@@ -12,6 +12,8 @@ import { sortForInbox } from '@/features/alerts/alert-presentation';
 import { AlertRow } from '@/features/alerts/alert-row';
 import { useSelectedHousehold } from '@/features/household/use-selected-household';
 import { PermissionPrompt } from '@/features/notifications/permission-prompt';
+import { alertFilterChanged, selectAlertFilter } from '@/features/view-state/view-state-slice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 /** Alerts are small and change on their own, so this is the one list worth polling. */
 export const ALERT_POLL_MS = 30_000;
@@ -22,7 +24,9 @@ export default function AlertsScreen() {
   const { t } = useTranslation();
 
   const { household, isLoading, error, refetch } = useSelectedHousehold();
-  const [filter, setFilter] = useState<AlertFilter>('open');
+  const dispatch = useAppDispatch();
+  const filter = useAppSelector(selectAlertFilter);
+  const setFilter = (next: AlertFilter) => dispatch(alertFilterChanged(next));
 
   const alerts = useListHouseholdAlertsQuery(
     household

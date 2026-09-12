@@ -226,6 +226,15 @@
     "stale": "Stand {{time}}",
     "reconnected": "Wieder online"
   },
+  "recent": {
+    "title": "Zuletzt geöffnet",
+    "settingsTitle": "Geöffnetes merken",
+    "settingsExplanation": "Merkt sich die zuletzt geöffneten Geräte und Haushalte, damit sie mit einem Tippen erreichbar sind. Nur auf diesem Telefon gespeichert, wird nirgendwohin gesendet und gelöscht, sobald Sie dies ausschalten oder sich abmelden.",
+    "enable": "Merken",
+    "disable": "Nicht mehr merken",
+    "clear": "Liste löschen",
+    "cleared": "Liste gelöscht"
+  },
   "addAsset": {
     "title": "Gerät hinzufügen",
     "toHousehold": "zu {{name}}",

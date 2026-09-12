@@ -226,6 +226,15 @@
     "stale": "Salvato {{time}}",
     "reconnected": "Di nuovo online"
   },
+  "recent": {
+    "title": "Aperti di recente",
+    "settingsTitle": "Ricorda cosa apro",
+    "settingsExplanation": "Conserva gli ultimi dispositivi e abitazioni aperti, per ritrovarli subito. Salvato solo su questo telefono, mai inviato altrove, ed eliminato se disattivi questa opzione o esci.",
+    "enable": "Ricorda",
+    "disable": "Non ricordare",
+    "clear": "Svuota l elenco",
+    "cleared": "Elenco svuotato"
+  },
   "addAsset": {
     "title": "Aggiungi dispositivo",
     "toHousehold": "a {{name}}",

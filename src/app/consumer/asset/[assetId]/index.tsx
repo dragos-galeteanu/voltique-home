@@ -1,6 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
@@ -13,6 +13,7 @@ import { ErrorState, LoadingState } from '@/components/states';
 import { Button, Screen, StatusPill, Surface, Text, useTheme } from '@/design-system';
 import { ASSET_STATUS_PRESENTATION } from '@/features/assets/asset-status';
 import { useSelectedHousehold } from '@/features/household/use-selected-household';
+import { itemViewed } from '@/features/recent/recent-slice';
 import { formatWindowLabel } from '@/features/telemetry/axis';
 import { EnergyChart } from '@/features/telemetry/energy-chart';
 import { MetricTile } from '@/features/telemetry/metric-tile';
@@ -20,6 +21,7 @@ import { buildWindow, type RangeKey } from '@/features/telemetry/range';
 import { RangeSelector } from '@/features/telemetry/range-selector';
 import { integrateEnergyWh, mergeSeries, peakValue } from '@/features/telemetry/series';
 import { formatEnergy, formatPercent, formatPower, formatRelativeTime } from '@/lib/format-energy';
+import { useAppDispatch } from '@/store/hooks';
 
 const LIVE_POLL_MS = 60_000;
 const RECENT_EVENT_COUNT = 5;
@@ -30,6 +32,7 @@ export default function AssetDetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const dispatch = useAppDispatch();
   const { assetId } = useLocalSearchParams<{ assetId: string }>();
   const { household } = useSelectedHousehold();
 
@@ -60,6 +63,12 @@ export default function AssetDetailScreen() {
   const logs = useListAssetLogsQuery(assetId ? { assetId, limit: RECENT_EVENT_COUNT } : skipToken);
 
   const rows = useMemo(() => mergeSeries(telemetry.data?.series ?? []), [telemetry.data]);
+
+  const assetName = asset.data?.name;
+  useEffect(() => {
+    // Ignored unless the person switched recording on; the slice decides, not the screen.
+    if (assetId && assetName) dispatch(itemViewed({ kind: 'asset', id: assetId, name: assetName }));
+  }, [assetId, assetName, dispatch]);
   const powerSeries = telemetry.data?.series.find((series) => series.metric === 'power');
   const chargeSeries = telemetry.data?.series.find((series) => series.metric === 'stateOfCharge');
 

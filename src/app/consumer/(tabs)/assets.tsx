@@ -12,6 +12,7 @@ import { useDeleteAssetMutation } from '@/features/assets/asset-endpoints';
 import { AssetRow } from '@/features/assets/asset-row';
 import { HouseholdSwitcher } from '@/features/household/household-switcher';
 import { useSelectedHousehold } from '@/features/household/use-selected-household';
+import { RecentSection } from '@/features/recent/recent-section';
 
 export default function AssetsScreen() {
   const theme = useTheme();
@@ -84,6 +85,7 @@ export default function AssetsScreen() {
           testID="add-asset"
           onPress={() => router.push('/consumer/add-asset')}
         />
+        <RecentSection />
       </View>
 
       {assets.isLoading ? (

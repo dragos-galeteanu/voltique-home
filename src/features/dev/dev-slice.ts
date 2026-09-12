@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { ScenarioId } from '@/mocks/scenarios';
-import { cacheRehydrated } from '@/store/persistence/cache-slice';
+import { storageRestored } from '@/store/persistence/cache-slice';
 
 export type DevState = {
   /**
@@ -23,8 +23,8 @@ const devSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Survives a reload, so a scenario does not have to be picked again after every save.
-    builder.addCase(cacheRehydrated, (state, action) => {
-      state.mockScenario = action.payload.dev?.mockScenario ?? null;
+    builder.addCase(storageRestored, (state, action) => {
+      state.mockScenario = (action.payload.dev?.mockScenario as ScenarioId | null) ?? null;
     });
   },
   selectors: {

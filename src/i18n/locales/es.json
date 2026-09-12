@@ -226,6 +226,15 @@
     "stale": "Guardado {{time}}",
     "reconnected": "De nuevo en línea"
   },
+  "recent": {
+    "title": "Abiertos recientemente",
+    "settingsTitle": "Recordar lo que abro",
+    "settingsExplanation": "Guarda los últimos dispositivos y hogares que abriste, para volver a ellos rápido. Se almacena solo en este teléfono, nunca se envía a ningún sitio y se borra si lo desactivas o cierras sesión.",
+    "enable": "Recordar",
+    "disable": "Dejar de recordar",
+    "clear": "Borrar la lista",
+    "cleared": "Lista borrada"
+  },
   "addAsset": {
     "title": "Añadir dispositivo",
     "toHousehold": "a {{name}}",

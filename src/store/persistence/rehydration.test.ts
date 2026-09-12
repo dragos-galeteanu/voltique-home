@@ -6,7 +6,7 @@ import { connectivityChanged } from '@/features/network/network-slice';
 import { type AppStore, createStore } from '@/store/create-store';
 import { type FetchMock, installFetchMock } from '@/test/fetch-mock';
 
-import { cacheRehydrated } from './cache-slice';
+import { storageRestored } from './cache-slice';
 import { buildSnapshot } from './persisted-state';
 
 const HOUSEHOLDS_PATH = '/api/v1/households';
@@ -66,7 +66,7 @@ describe('restoring a cache', () => {
     fetchMock.restore();
     fetchMock = installFetchMock();
     const second = freshStore();
-    second.dispatch(cacheRehydrated(snapshot));
+    second.dispatch(storageRestored({ cache: snapshot }));
     second.dispatch(connectivityChanged(false));
 
     const restored = voltiqueApi.endpoints.listHouseholds.select({})(second.getState());
@@ -75,21 +75,27 @@ describe('restoring a cache', () => {
     expect(fetchMock.requests).toHaveLength(0);
   });
 
-  it('brings back the selected household and the appearance', async () => {
-    const first = freshStore();
-    const snapshot = buildSnapshot({
-      ...first.getState(),
-      ui: { themePreference: 'dark', languagePreference: 'de' },
-      household: { selectedHouseholdId: 'h1' },
-    });
+  it('brings back the selected household, the appearance and where you left off', async () => {
+    const snapshot = buildSnapshot(freshStore().getState());
+    const store = freshStore();
 
-    const second = freshStore();
-    second.dispatch(cacheRehydrated(snapshot));
+    store.dispatch(
+      storageRestored({
+        cache: snapshot,
+        appearance: { themePreference: 'dark', languagePreference: 'de' },
+        selectedHouseholdId: 'h1',
+        viewState: { dashboardRange: 'month', alertFilter: 'all' },
+        prompts: { notificationPromptDismissed: true },
+      }),
+    );
 
-    expect(second.getState().household.selectedHouseholdId).toBe('h1');
-    expect(second.getState().ui.themePreference).toBe('dark');
-    expect(second.getState().ui.languagePreference).toBe('de');
-    expect(second.getState().cache.restoredAt).toBe(snapshot.savedAt);
+    expect(store.getState().household.selectedHouseholdId).toBe('h1');
+    expect(store.getState().ui.themePreference).toBe('dark');
+    expect(store.getState().ui.languagePreference).toBe('de');
+    expect(store.getState().viewState.dashboardRange).toBe('month');
+    expect(store.getState().viewState.alertFilter).toBe('all');
+    expect(store.getState().notifications.promptDismissed).toBe(true);
+    expect(store.getState().cache.restoredAt).toBe(snapshot.savedAt);
   });
 });
 

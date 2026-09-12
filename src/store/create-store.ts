@@ -9,7 +9,9 @@ import { householdReducer } from '@/features/household/household-slice';
 import { inviteReducer } from '@/features/invites/invite-slice';
 import { networkReducer } from '@/features/network/network-slice';
 import { notificationReducer } from '@/features/notifications/notification-slice';
+import { recentReducer } from '@/features/recent/recent-slice';
 import { uiReducer } from '@/features/ui/ui-slice';
+import { viewStateReducer } from '@/features/view-state/view-state-slice';
 
 import { cacheReducer } from './persistence/cache-slice';
 
@@ -30,6 +32,8 @@ export function createStore() {
       network: networkReducer,
       notifications: notificationReducer,
       cache: cacheReducer,
+      recent: recentReducer,
+      viewState: viewStateReducer,
       ui: uiReducer,
       [api.reducerPath]: api.reducer,
     },

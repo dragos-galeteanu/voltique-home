@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { signedOut } from '@/features/auth/auth-slice';
-import { cacheRehydrated } from '@/store/persistence/cache-slice';
+import { storageRestored } from '@/store/persistence/cache-slice';
 
 export type HouseholdState = {
   /** Which household the consumer screens are looking at. */
@@ -27,9 +27,8 @@ const householdSlice = createSlice({
     });
 
     // Coming back to a different household than you left would be disorienting.
-    builder.addCase(cacheRehydrated, (state, action) => {
-      state.selectedHouseholdId =
-        action.payload.household?.selectedHouseholdId ?? state.selectedHouseholdId;
+    builder.addCase(storageRestored, (state, action) => {
+      state.selectedHouseholdId = action.payload.selectedHouseholdId ?? state.selectedHouseholdId;
     });
   },
   selectors: {

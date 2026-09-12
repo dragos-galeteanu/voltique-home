@@ -1,8 +1,10 @@
 import { isAnyOf, type ListenerMiddlewareInstance } from '@reduxjs/toolkit';
 
+import { clearPersonalData } from '@/store/persistence/persist';
+
 import type { AuthState } from './auth-slice';
 import { signedIn, signedOut, tokensRefreshed } from './auth-slice';
-import { clearStoredSession, writeStoredSession } from './token-storage';
+import { writeStoredSession } from './token-storage';
 
 type StartListening = ListenerMiddlewareInstance['startListening'];
 
@@ -30,9 +32,11 @@ export function registerAuthListeners(startListening: StartListening) {
     actionCreator: signedOut,
     effect: async () => {
       try {
-        await clearStoredSession();
+        // Everything belonging to that person, not only the tokens: the cached data,
+        // where they left off, and anything they recently opened.
+        await clearPersonalData();
       } catch (error) {
-        console.warn('Failed to clear stored session', error);
+        console.warn('Failed to clear stored data', error);
       }
     },
   });

@@ -1,6 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, View } from 'react-native';
 
@@ -14,7 +14,9 @@ import { Button, Screen, StatusPill, Surface, Text, useTheme } from '@/design-sy
 import { sortForInbox } from '@/features/alerts/alert-presentation';
 import { AlertRow } from '@/features/alerts/alert-row';
 import { ASSET_STATUS_PRESENTATION } from '@/features/assets/asset-status';
+import { itemViewed } from '@/features/recent/recent-slice';
 import { formatRelativeTime } from '@/lib/format-energy';
+import { useAppDispatch } from '@/store/hooks';
 
 /**
  * One household as an installer sees it: what is installed, what is wrong, and a way
@@ -26,6 +28,7 @@ export default function InstallerHouseholdScreen() {
   const router = useRouter();
   const { t } = useTranslation();
 
+  const dispatch = useAppDispatch();
   const { householdId } = useLocalSearchParams<{ householdId: string }>();
   const household = useGetHouseholdQuery(householdId ? { householdId } : skipToken);
   const assets = useListHouseholdAssetsQuery(householdId ? { householdId } : skipToken);
@@ -34,6 +37,13 @@ export default function InstallerHouseholdScreen() {
   );
 
   const openAlerts = useMemo(() => sortForInbox(alerts.data?.data ?? []), [alerts.data]);
+
+  const householdName = household.data?.name;
+  useEffect(() => {
+    if (householdId && householdName) {
+      dispatch(itemViewed({ kind: 'household', id: householdId, name: householdName }));
+    }
+  }, [dispatch, householdId, householdName]);
 
   if (household.isLoading) {
     return (
